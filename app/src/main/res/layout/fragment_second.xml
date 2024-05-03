@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    tools:context=".SecondFragment">
+
+    <ImageView
+        android:id="@+id/welcome_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="50sp"
+        android:layout_marginTop="100sp"
+        android:src="@drawable/bg_welcome" />
+
+    <ImageButton
+        android:id="@+id/camera_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/welcome_bg"
+        android:layout_marginTop="50sp"
+        android:layout_centerHorizontal="true"
+        android:background="@null"
+        android:src="@drawable/cam" />
+
+    <TextView
+        android:id="@+id/open_camera_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/camera_button"
+        android:layout_marginTop="10sp"
+        android:fontFamily="@font/montserrat_extralight"
+        android:text="@string/camera_text"
+        android:textAlignment="center"
+        android:textColor="@color/white" />
+
+    <ImageButton
+        android:id="@+id/gallery_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/open_camera_text"
+        android:layout_marginTop="30sp"
+        android:layout_centerHorizontal="true"
+        android:background="@null"
+        android:src="@drawable/gal" />
+
+    <TextView
+        android:id="@+id/import_gallery_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/gallery_button"
+        android:layout_marginTop="10sp"
+        android:fontFamily="@font/montserrat_extralight"
+        android:text="@string/gallery_text"
+        android:textAlignment="center"
+        android:textColor="@color/white" />
+
+</RelativeLayout>
