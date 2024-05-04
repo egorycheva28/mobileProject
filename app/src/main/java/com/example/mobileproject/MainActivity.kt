@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AlertDialog
 class MainActivity : AppCompatActivity() {
     val REQUEST_GALLERY = 100
+    val REQUEST_CAMERA = 101
     private var nBitmap: Bitmap? = null
     private var isReadPermissionGallery = false
     private var isReadPermissionCamera = false
@@ -39,8 +40,8 @@ class MainActivity : AppCompatActivity() {
         ButtonGallery.setOnClickListener {
 
             if(isReadPermissionGallery) {
-                intent = Intent(Intent.ACTION_PICK)
-                intent.type = "image/*"
+                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                //intent.type = "image/*"
                 startActivityForResult(intent, REQUEST_GALLERY)
             }
             else
@@ -61,7 +62,7 @@ class MainActivity : AppCompatActivity() {
             if(isReadPermissionCamera) {
                 val cameraIntent=Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
-                startActivityForResult(cameraIntent,REQUEST_GALLERY)
+                startActivityForResult(cameraIntent,REQUEST_CAMERA)
 
             }
             else
@@ -110,30 +111,66 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (resultCode == RESULT_OK && requestCode == REQUEST_GALLERY) {
-            val photo = data!!.extras!!["data"]as Bitmap
-            val clickImageid = findViewById(R.id.imageView1) as ImageView
-            clickImageid.setImageBitmap(photo)
-
-        }
-    }
-
-
-
     /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == RESULT_OK && requestCode == REQUEST_GALLERY) {
-            val imageUri = data?.data
-            nBitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
-            show_URI_as_Bitmap(imageUri)
+            val photo = data!!.extras!!["data"] as Bitmap
+            val clickImageid = findViewById(R.id.imageView1) as ImageView
+            clickImageid.setImageBitmap(photo)
+
+        }
+    }*/
+
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == RESULT_OK) {
+            if(requestCode==REQUEST_GALLERY) {
+                val imageUri = data?.data
+                //val fragment1=MainActivity3()
+
+                nBitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
+                val clickImageid = findViewById(R.id.imageView1) as ImageView
+                clickImageid.setImageBitmap(nBitmap)
+                //fragment1.setImage1(nBitmap!!)
+                //val myImageView = findViewById(R.id.imageView1) as ImageView
+                //myImageView.setImageURI(imageUri)
+            }
+            else if(requestCode==REQUEST_CAMERA) {
+                val photo = data!!.extras!!["data"] as Bitmap
+                //val fragment1=MainActivity3()
+                //fragment1.setImage1(photo)
+                val clickImageid = findViewById(R.id.imageView1) as ImageView
+                clickImageid.setImageBitmap(photo)
+            }
+            /*when(requestCode)
+            {
+                REQUEST_GALLERY->{
+                    data?.data?.let { selectedImage ->
+                        val intent = Intent(this, MainActivity::class.java)
+                        intent.putExtra("imageUri", selectedImage.toString())
+                        startActivity(intent)
+                    }
+                }
+                REQUEST_CAMERA->{
+                    val imageBitmap = data?.extras?.get("data") as Bitmap
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.putExtra("imageBitmap", imageBitmap)
+                    startActivity(intent)
+                }*/
+
+            //val imageUri = data?.data
+            //val fragment1=FirstFragment()
+            //fragment1.setImage(imageUri!!)
+            //nBitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
+            //show_URI_as_Bitmap(imageUri)
         }
     }
 
-    fun show_URI_as_Bitmap(uri: Uri?) {
+    /*fun show_URI_as_Bitmap(uri: Uri?) {
         val myImageView = findViewById(R.id.imageView1) as ImageView
         myImageView.setImageURI(uri)
     }*/
