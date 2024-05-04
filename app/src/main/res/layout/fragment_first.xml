@@ -5,15 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg"
+    android:id="@+id/first_fragment_layout"
     tools:context=".FirstFragment">
 
     <LinearLayout
+        android:id="@+id/up_arrows"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:orientation="horizontal"
-        android:id="@+id/up_arrows"
-        android:paddingTop="20dp">
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/back_button"
@@ -49,11 +48,42 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imageViewFirstFragment"
+        android:background="@color/black"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/up_arrows"
-        tools:src="@drawable/black_bg" />
+        android:layout_above="@id/under_tools" />
 
+    <LinearLayout
+        android:id="@+id/under_tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
 
+        <ImageButton
+            android:id="@+id/rotate_button"
+            android:layout_width="0dp"
+            android:layout_height="90dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:src="@drawable/refresh" />
+
+        <ImageButton
+            android:id="@+id/filter_button"
+            android:layout_width="0dp"
+            android:layout_height="90dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:src="@drawable/filter" />
+
+        <ImageButton
+            android:id="@+id/crop_button"
+            android:layout_width="0dp"
+            android:layout_height="90dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:src="@drawable/scale" />
+    </LinearLayout>
 </RelativeLayout>

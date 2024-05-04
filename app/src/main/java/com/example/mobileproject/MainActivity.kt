@@ -17,8 +17,10 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AlertDialog
+
 class MainActivity : AppCompatActivity() {
     val REQUEST_GALLERY = 100
+    val REQUEST_CAMERA = 200
     private var nBitmap: Bitmap? = null
     private var isReadPermissionGallery = false
     private var isReadPermissionCamera = false
@@ -28,74 +30,73 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         //enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions())
-        {
-                permissions->isReadPermissionGallery=permissions[android.Manifest.permission.READ_EXTERNAL_STORAGE]?:isReadPermissionGallery
-            isReadPermissionCamera=permissions[android.Manifest.permission.CAMERA]?:isReadPermissionCamera
-        }
+        permissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions())
+            { permissions ->
+                isReadPermissionGallery =
+                    permissions[android.Manifest.permission.READ_EXTERNAL_STORAGE]
+                        ?: isReadPermissionGallery
+                isReadPermissionCamera =
+                    permissions[android.Manifest.permission.CAMERA] ?: isReadPermissionCamera
+            }
         requestPermission()
 
         val ButtonGallery = findViewById(R.id.gallery) as ImageButton
         ButtonGallery.setOnClickListener {
 
-            if(isReadPermissionGallery) {
+            if (isReadPermissionGallery) {
                 intent = Intent(Intent.ACTION_PICK)
                 intent.type = "image/*"
                 startActivityForResult(intent, REQUEST_GALLERY)
-            }
-            else
-            {
+            } else {
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Нет доступа")
                 builder.setMessage("Разрешите доступ к галереи")
-                builder.setPositiveButton("ОК") {
-                        dialog, id ->  dialog.cancel()
+                builder.setPositiveButton("ОК") { dialog, id ->
+                    dialog.cancel()
                 }
                 val dialog = builder.create()
                 dialog.show()
-
             }
         }
-        val ButtonCamera = findViewById(R.id.camera)as ImageButton
-        ButtonCamera.setOnClickListener{
-            if(isReadPermissionCamera) {
-                val cameraIntent=Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
-                startActivityForResult(cameraIntent,REQUEST_GALLERY)
+        val ButtonCamera = findViewById(R.id.camera) as ImageButton
+        ButtonCamera.setOnClickListener {
+            if (isReadPermissionCamera) {
+                val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
-            }
-            else
-            {
+                startActivityForResult(cameraIntent, REQUEST_CAMERA)
+
+            } else {
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Нет доступа")
                 builder.setMessage("Разрешите доступ к камере")
-                builder.setPositiveButton("ОК") {
-                        dialog, id ->  dialog.cancel()
+                builder.setPositiveButton("ОК") { dialog, id ->
+                    dialog.cancel()
                 }
                 val dialog = builder.create()
                 dialog.show()
-
             }
-
         }
     }
-    private fun requestPermission()
-    {
-        isReadPermissionGallery=ContextCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE)==
+
+    private fun requestPermission() {
+        isReadPermissionGallery = ContextCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.READ_EXTERNAL_STORAGE
+        ) ==
                 PackageManager.PERMISSION_GRANTED
-        isReadPermissionCamera=ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA)==
-                PackageManager.PERMISSION_GRANTED
-        val permissionRequest:MutableList<String> = ArrayList()
-        if(!isReadPermissionGallery)
-        {
+        isReadPermissionCamera =
+            ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) ==
+                    PackageManager.PERMISSION_GRANTED
+        val permissionRequest: MutableList<String> = ArrayList()
+        if (!isReadPermissionGallery) {
             permissionRequest.add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
         }
-        if(!isReadPermissionCamera)
-        {
+        if (!isReadPermissionCamera) {
             permissionRequest.add(android.Manifest.permission.CAMERA)
         }
-        if(permissionRequest.isNotEmpty())
-        {
+        if (permissionRequest.isNotEmpty()) {
             permissionLauncher.launch(permissionRequest.toTypedArray())
         }
     }
@@ -104,21 +105,55 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        if (resultCode == RESULT_OK) {
+            when(requestCode) {
+                REQUEST_GALLERY -> {
+                    val imageUri = data?.data
+                    imageUri?.let { uri ->
+                        val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+                        showFirstFragmentWithImage(bitmap)
+                    }
+                }
+                REQUEST_CAMERA -> {
+                    val photo = data?.extras?.get("data") as? Bitmap
+                    photo?.let {
+                        showFirstFragmentWithImage(it)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showFirstFragmentWithImage(bitmap: Bitmap) {
+        val fragment = FirstFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable("image", bitmap)
+            }
+        }
+        supportFragmentManager.beginTransaction()
+            .replace(
+                R.id.first_fragment_layout,
+                fragment
+            )
+            .commit()
+    }
+
+    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
         if (resultCode == RESULT_OK && requestCode == REQUEST_GALLERY) {
             val photo = data!!.extras!!["data"]as Bitmap
             val clickImageid = findViewById(R.id.imageView1) as ImageView
             clickImageid.setImageBitmap(photo)
 
         }
-    }
-/*
-    fun show_URI_as_Bitmap(uri: Uri?) {
-        val myImageView = findViewById(R.id.imageView1) as ImageView
-        myImageView.setImageURI(uri)
     }*/
+    /*
+        fun show_URI_as_Bitmap(uri: Uri?) {
+            val myImageView = findViewById(R.id.imageView1) as ImageView
+            myImageView.setImageURI(uri)
+        }*/
 }
-
-
 
 
 /*ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
