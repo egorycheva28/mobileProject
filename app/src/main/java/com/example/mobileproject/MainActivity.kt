@@ -96,11 +96,6 @@ class MainActivity : AppCompatActivity() {
             imageView.setImageBitmap(newBitmap)
 
         }*/
-        val buttonSave = findViewById(R.id.saving) as Button
-        buttonSave.setOnClickListener {
-            saveImageToGallery(nBitmap!!)
-        }
-
     }
 
     private fun requestPermission() {

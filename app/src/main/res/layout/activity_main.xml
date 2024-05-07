@@ -65,10 +65,4 @@
         android:layout_marginHorizontal="50sp"
         android:layout_marginTop="321dp" />
 
-    <Button
-        android:id="@+id/saving"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SAVE" />
-
 </RelativeLayout>

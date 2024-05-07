@@ -6,4 +6,6 @@
     <string name="camera_text">open camera</string>
     <string name="gallery_text">import from gallery</string>
     <string name="title_activity_main3">MainActivity3</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
