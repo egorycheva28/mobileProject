@@ -56,13 +56,19 @@
         android:text="@string/gallery_text"
         android:textAlignment="center"
         android:textColor="@color/white" />
-    
+
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="350sp"
-        android:layout_height="450sp"
+        android:layout_width="133dp"
+        android:layout_height="134dp"
         android:layout_below="@+id/welcome_bg"
         android:layout_marginHorizontal="50sp"
-        />
+        android:layout_marginTop="321dp" />
+
+    <Button
+        android:id="@+id/saving"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SAVE" />
 
 </RelativeLayout>

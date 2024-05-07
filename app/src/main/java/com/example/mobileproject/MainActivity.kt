@@ -17,10 +17,16 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AlertDialog
+import android.content.ContentValues
+import android.content.Context
+import android.os.Build
+import android.os.Environment
+import java.io.ByteArrayOutputStream
+import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
     val REQUEST_GALLERY = 100
-    val REQUEST_CAMERA = 200
+    val REQUEST_CAMERA = 101
     private var nBitmap: Bitmap? = null
     private var isReadPermissionGallery = false
     private var isReadPermissionCamera = false
@@ -45,8 +51,9 @@ class MainActivity : AppCompatActivity() {
         ButtonGallery.setOnClickListener {
 
             if (isReadPermissionGallery) {
-                intent = Intent(Intent.ACTION_PICK)
-                intent.type = "image/*"
+                val intent =
+                    Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+
                 startActivityForResult(intent, REQUEST_GALLERY)
             } else {
                 val builder = AlertDialog.Builder(this)
@@ -57,9 +64,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 val dialog = builder.create()
                 dialog.show()
+
             }
         }
-
         val ButtonCamera = findViewById(R.id.camera) as ImageButton
         ButtonCamera.setOnClickListener {
             if (isReadPermissionCamera) {
@@ -76,8 +83,24 @@ class MainActivity : AppCompatActivity() {
                 }
                 val dialog = builder.create()
                 dialog.show()
+
             }
+
         }
+        /*val ButtonTurn = findViewById(R.id.rotate) as Button
+        ButtonTurn.setOnClickListener {
+            val bitmap = nBitmap
+            val newBitmap = rotateImage(bitmap);
+            nBitmap = newBitmap;
+            val imageView = findViewById(R.id.imageView1) as ImageView
+            imageView.setImageBitmap(newBitmap)
+
+        }*/
+        val buttonSave = findViewById(R.id.saving) as Button
+        buttonSave.setOnClickListener {
+            saveImageToGallery(nBitmap!!)
+        }
+
     }
 
     private fun requestPermission() {
@@ -102,57 +125,98 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    fun bitmapToUri(context: Context, bitmap: Bitmap): Uri? {
+        var bytes = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        var path =
+            MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
+        return Uri.parse(path)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == RESULT_OK) {
-            when(requestCode) {
-                REQUEST_GALLERY -> {
-                    val imageUri = data?.data
-                    imageUri?.let { uri ->
-                        val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-                        showFirstFragmentWithImage(bitmap)
-                    }
-                }
-                REQUEST_CAMERA -> {
-                    val photo = data?.extras?.get("data") as? Bitmap
-                    photo?.let {
-                        showFirstFragmentWithImage(it)
-                    }
-                }
+            if (requestCode == REQUEST_GALLERY) {
+                val imageUri = data?.data
+                //передача изображения в новый активити
+                val intent = Intent(this, Activity1::class.java)
+                intent.putExtra("imageUri", imageUri.toString())
+
+                startActivity(intent)
+
+                nBitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
+
+            } else if (requestCode == REQUEST_CAMERA) {
+                nBitmap = data!!.extras!!["data"] as Bitmap
+                //передача изображения в новый активити
+                val imageUri = bitmapToUri(this, nBitmap!!)
+                val intent = Intent(this, Activity1::class.java)
+
+                intent.putExtra("imageUri", imageUri.toString())
+
+                startActivity(intent)
             }
+
         }
     }
 
-    private fun showFirstFragmentWithImage(bitmap: Bitmap) {
-        val fragment = FirstFragment().apply {
-            arguments = Bundle().apply {
-                putParcelable("image", bitmap)
+    private fun saveImageToGallery(bitmap: Bitmap) {
+        val resolver =
+            contentResolver // получает экземпляр ContentResolver для текущего контекста приложения
+        val fileName =
+            System.currentTimeMillis().toString() + ".png" // имя файла из даты времени и пнг
+
+        // хранилище мультимедийных файлов андроид медиастор
+        val contentValues = ContentValues().apply {// контейнер для хранения пар ключ-значение
+            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName) // имя файла
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/png") // тип файла
+            // для андроида >= 10
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
             }
         }
-        supportFragmentManager.beginTransaction()
-            .replace(
-                R.id.first_fragment_layout,
-                fragment
-            )
-            .commit()
+        // вставляет новый файл в систему хранения файлов андроид
+        val imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+        try {
+            imageUri?.let { // если ури не нулл
+                resolver.openOutputStream(it)?.use { outputStream ->
+                    bitmap.compress(
+                        Bitmap.CompressFormat.PNG,
+                        100,
+                        outputStream
+                    ) // запись данных изображения в поток для записи данных в новый файл
+                }
+                Toast.makeText(this, "Image saved to gallery", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
     }
 
-    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (resultCode == RESULT_OK && requestCode == REQUEST_GALLERY) {
-            val photo = data!!.extras!!["data"]as Bitmap
-            val clickImageid = findViewById(R.id.imageView1) as ImageView
-            clickImageid.setImageBitmap(photo)
-
+    private fun rotateImage(bitmap: Bitmap?): Bitmap {
+        val width = bitmap!!.width
+        val height = bitmap.height
+        var rotatedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        if (width >= height) {
+            rotatedBitmap = Bitmap.createBitmap(width, width, Bitmap.Config.ARGB_8888)
+        } else {
+            rotatedBitmap = Bitmap.createBitmap(height, height, Bitmap.Config.ARGB_8888)
         }
-    }*/
-    /*
-        fun show_URI_as_Bitmap(uri: Uri?) {
-            val myImageView = findViewById(R.id.imageView1) as ImageView
-            myImageView.setImageURI(uri)
-        }*/
+
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                val px = bitmap.getPixel(x, y)
+                rotatedBitmap.setPixel(height - y - 1, x, px)
+            }
+        }
+        return rotatedBitmap
+        //var matrix = Matrix()
+        //matrix.postRotate(90.0f)
+
+        //return Bitmap.createBitmap(bitmap!!, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
 }
 
 
@@ -161,26 +225,4 @@ class MainActivity : AppCompatActivity() {
     v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
     insets
 }*/
-/*val myButton = findViewById(R.id.fragment1) as Button
-val frameLayout = findViewById(R.id.frame_layout) as FrameLayout
-fun setNewFragment()
-{
-    val fragment=FirstFragment()
-    getSupportFragmentManager().beginTransaction()
-        .add(R.id.frame_layout,fragment)
-        .replace(R.id.frame_layout,fragment)
 
-}
-myButton.setOnClickListener {
-    val fragment = FirstFragment()
-    supportFragmentManager.beginTransaction()
-        //.add(R.id.frame_layout,fragment)
-        .replace(R.id.frame_layout, fragment)
-        .addToBackStack(null)
-        .commit()
-    val intent=Intent(Intent.ACTION_PICK)
-    intent.type="image/*"
-    startActivityForResult(intent,REQUEST_GALLERY)
-}*/
-
- */
