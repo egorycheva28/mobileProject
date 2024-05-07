@@ -67,28 +67,38 @@ class Activity1 : AppCompatActivity() {
         val buttonRed: ImageButton = findViewById(R.id.red_button)
         buttonRed.setOnClickListener {
             nBitmap?.let { bitmap ->
-                val bwBitmap = convertToRed(bitmap)
-                imageView.setImageBitmap(bwBitmap)
-                nBitmap = bwBitmap
+                val redBitmap = convertToRed(bitmap)
+                imageView.setImageBitmap(redBitmap)
+                nBitmap = redBitmap
             } ?: Toast.makeText(this, "No image to use filter on", Toast.LENGTH_SHORT).show()
         }
 
         val buttonBrightness: ImageButton = findViewById(R.id.brightness_button)
         buttonBrightness.setOnClickListener {
             nBitmap?.let { bitmap ->
-                val bwBitmap = makeBrighter(bitmap)
-                imageView.setImageBitmap(bwBitmap)
-                nBitmap = bwBitmap
+                val brighterBitmap = makeBrighter(bitmap)
+                imageView.setImageBitmap(brighterBitmap)
+                nBitmap = brighterBitmap
             } ?: Toast.makeText(this, "No image to use filter on", Toast.LENGTH_SHORT).show()
         }
 
         val buttonBlur: ImageButton = findViewById(R.id.blur_button)
         buttonBlur.setOnClickListener {
             nBitmap?.let { bitmap ->
-                val bwBitmap = gaussFilter(bitmap)
-                imageView.setImageBitmap(bwBitmap)
-                nBitmap = bwBitmap
-            } ?: Toast.makeText(this, "No image to use filter on", Toast.LENGTH_SHORT).show()
+                val gaussBitmap = gaussFilter(bitmap)
+                imageView.setImageBitmap(gaussBitmap)
+                nBitmap = gaussBitmap
+            } ?: Toast.makeText(this, "No image to blur", Toast.LENGTH_SHORT).show()
+        }
+
+        val buttonScale: ImageButton = findViewById(R.id.crop_button)
+        buttonScale.setOnClickListener {
+            nBitmap?.let { bitmap ->
+                val scaleFactor = 0.8f
+                val scaledBitmap = scaleImage(bitmap, scaleFactor)
+                imageView.setImageBitmap(scaledBitmap)
+                nBitmap = scaledBitmap
+            } ?: Toast.makeText(this, "No image to crop", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -214,6 +224,11 @@ class Activity1 : AppCompatActivity() {
         return blurredBitmap
     }
 
+    private fun scaleImage(bitmap: Bitmap, scaleFactor: Float): Bitmap {
+        val newWidth = (bitmap.width * scaleFactor).toInt()
+        val newHeight = (bitmap.height * scaleFactor).toInt()
+        return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true)
+    }
 
     private fun saveImageToGallery(bitmap: Bitmap) {
         val resolver = contentResolver
