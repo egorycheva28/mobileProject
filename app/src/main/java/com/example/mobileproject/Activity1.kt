@@ -81,6 +81,15 @@ class Activity1 : AppCompatActivity() {
                 nBitmap = bwBitmap
             } ?: Toast.makeText(this, "No image to use filter on", Toast.LENGTH_SHORT).show()
         }
+
+        val buttonBlur: ImageButton = findViewById(R.id.blur_button)
+        buttonBlur.setOnClickListener {
+            nBitmap?.let { bitmap ->
+                val bwBitmap = gaussFilter(bitmap)
+                imageView.setImageBitmap(bwBitmap)
+                nBitmap = bwBitmap
+            } ?: Toast.makeText(this, "No image to use filter on", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun convertToBlackAndWhite(bitmap: Bitmap): Bitmap {
@@ -153,6 +162,56 @@ class Activity1 : AppCompatActivity() {
         }
 
         return brightBitmap
+    }
+
+    private fun gaussFilter(bitmap: Bitmap): Bitmap {
+        val width = bitmap.width
+        val height = bitmap.height
+        val blurredBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+
+        val gaussianKernel = arrayOf(
+            arrayOf(1, 2, 1),
+            arrayOf(2, 4, 2),
+            arrayOf(1, 2, 1)
+        )
+        val kernelSum = 16
+
+        for (x in 1 until width - 1) {
+            for (y in 1 until height - 1) {
+                var redSum = 0
+                var greenSum = 0
+                var blueSum = 0
+
+                for (kernelX in -1..1) {
+                    for (kernelY in -1..1) {
+                        val pixel = bitmap.getPixel(x + kernelX, y + kernelY)
+                        val weight = gaussianKernel[kernelX + 1][kernelY + 1]
+
+                        redSum += Color.red(pixel) * weight
+                        greenSum += Color.green(pixel) * weight
+                        blueSum += Color.blue(pixel) * weight
+                    }
+                }
+
+                val red = (redSum / kernelSum).toInt()
+                val green = (greenSum / kernelSum).toInt()
+                val blue = (blueSum / kernelSum).toInt()
+                val newPixel = Color.rgb(red, green, blue)
+
+                blurredBitmap.setPixel(x, y, newPixel)
+            }
+        }
+
+        for (i in 0 until width) {
+            blurredBitmap.setPixel(i, 0, bitmap.getPixel(i, 0))
+            blurredBitmap.setPixel(i, height - 1, bitmap.getPixel(i, height - 1))
+        }
+        for (i in 0 until height) {
+            blurredBitmap.setPixel(0, i, bitmap.getPixel(0, i))
+            blurredBitmap.setPixel(width - 1, i, bitmap.getPixel(width - 1, i))
+        }
+
+        return blurredBitmap
     }
 
 
