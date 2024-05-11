@@ -2,4 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="bg">#343434</color>
+    <color name="text_dark_green">#004600</color>
+    <color name="green_hits">#9AFE04</color>
+    <color name="elipse_color">#D6D6D6</color>
 </resources>
