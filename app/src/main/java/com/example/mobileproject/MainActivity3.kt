@@ -55,7 +55,7 @@ class MainActivity3 : AppCompatActivity() {
             imageView.setImageBitmap(result)
         }
 
-        val buttonSave = findViewById(R.id.save) as Button
+        val buttonSave = findViewById(R.id.save2) as Button
         buttonSave.setOnClickListener {
             saveImageToGallery(imageBitmap1!!)
 
