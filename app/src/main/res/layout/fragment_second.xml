@@ -24,7 +24,7 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:id="@+id/rotate_button"
+                    android:id="@+id/rotate_button1"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_weight="1"
@@ -32,7 +32,7 @@
                     android:src="@drawable/black_white" />
 
                 <ImageButton
-                    android:id="@+id/filter_button"
+                    android:id="@+id/filter_button1"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_weight="1"
@@ -40,7 +40,7 @@
                     android:src="@drawable/brightness" />
 
                 <ImageButton
-                    android:id="@+id/crop_button"
+                    android:id="@+id/crop_button1"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_weight="1"
@@ -48,7 +48,7 @@
                     android:src="@drawable/red" />
 
                 <ImageButton
-                    android:id="@+id/face_button"
+                    android:id="@+id/face_button1"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_weight="1"
@@ -56,7 +56,7 @@
                     android:src="@drawable/blur" />
 
                 <ImageButton
-                    android:id="@+id/unsharp_button"
+                    android:id="@+id/unsharp_button1"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_weight="1"
