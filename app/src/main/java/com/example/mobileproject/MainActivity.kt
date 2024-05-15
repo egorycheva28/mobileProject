@@ -22,7 +22,11 @@ import android.content.Context
 import android.os.Build
 import android.os.Environment
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     val REQUEST_GALLERY = 100
@@ -32,6 +36,9 @@ class MainActivity : AppCompatActivity() {
     private var isReadPermissionCamera = false
 
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
+    private lateinit var cameraPhotoPath: String
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //enableEdgeToEdge()
@@ -83,19 +90,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 val dialog = builder.create()
                 dialog.show()
-
             }
 
         }
-        /*val ButtonTurn = findViewById(R.id.rotate) as Button
-        ButtonTurn.setOnClickListener {
-            val bitmap = nBitmap
-            val newBitmap = rotateImage(bitmap);
-            nBitmap = newBitmap;
-            val imageView = findViewById(R.id.imageView1) as ImageView
-            imageView.setImageBitmap(newBitmap)
-
-        }*/
     }
 
     private fun requestPermission() {
@@ -119,7 +116,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     fun bitmapToUri(context: Context, bitmap: Bitmap): Uri? {
         var bytes = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
@@ -128,6 +124,33 @@ class MainActivity : AppCompatActivity() {
         return Uri.parse(path)
     }
 
+    //    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//
+//        if (resultCode == RESULT_OK) {
+//            if (requestCode == REQUEST_GALLERY) {
+//                val imageUri = data?.data
+//                //передача изображения в новый активити
+//                val intent = Intent(this, Activity1::class.java)
+//                intent.putExtra("imageUri", imageUri.toString())
+//
+//                startActivity(intent)
+//
+//                nBitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
+//
+//            } else if (requestCode == REQUEST_CAMERA) {
+//                nBitmap = data!!.extras!!["data"] as Bitmap
+//                //передача изображения в новый активити
+//                val imageUri = bitmapToUri(this, nBitmap!!)
+//                val intent = Intent(this, Activity1::class.java)
+//
+//                intent.putExtra("imageUri", imageUri.toString())
+//
+//                startActivity(intent)
+//            }
+//
+//        }
+//    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -137,9 +160,7 @@ class MainActivity : AppCompatActivity() {
                 //передача изображения в новый активити
                 val intent = Intent(this, Activity1::class.java)
                 intent.putExtra("imageUri", imageUri.toString())
-
                 startActivity(intent)
-
                 nBitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
 
             } else if (requestCode == REQUEST_CAMERA) {
@@ -147,70 +168,12 @@ class MainActivity : AppCompatActivity() {
                 //передача изображения в новый активити
                 val imageUri = bitmapToUri(this, nBitmap!!)
                 val intent = Intent(this, Activity1::class.java)
-
                 intent.putExtra("imageUri", imageUri.toString())
-
                 startActivity(intent)
+
             }
 
         }
-    }
-
-    private fun saveImageToGallery(bitmap: Bitmap) {
-        val resolver =
-            contentResolver // получает экземпляр ContentResolver для текущего контекста приложения
-        val fileName =
-            System.currentTimeMillis().toString() + ".png" // имя файла из даты времени и пнг
-
-        // хранилище мультимедийных файлов андроид медиастор
-        val contentValues = ContentValues().apply {// контейнер для хранения пар ключ-значение
-            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName) // имя файла
-            put(MediaStore.MediaColumns.MIME_TYPE, "image/png") // тип файла
-            // для андроида >= 10
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
-            }
-        }
-        // вставляет новый файл в систему хранения файлов андроид
-        val imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-
-        try {
-            imageUri?.let { // если ури не нулл
-                resolver.openOutputStream(it)?.use { outputStream ->
-                    bitmap.compress(
-                        Bitmap.CompressFormat.PNG,
-                        100,
-                        outputStream
-                    ) // запись данных изображения в поток для записи данных в новый файл
-                }
-                Toast.makeText(this, "Image saved to gallery", Toast.LENGTH_SHORT).show()
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun rotateImage(bitmap: Bitmap?): Bitmap {
-        val width = bitmap!!.width
-        val height = bitmap.height
-        var rotatedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        if (width >= height) {
-            rotatedBitmap = Bitmap.createBitmap(width, width, Bitmap.Config.ARGB_8888)
-        } else {
-            rotatedBitmap = Bitmap.createBitmap(height, height, Bitmap.Config.ARGB_8888)
-        }
-
-        for (x in 0 until width) {
-            for (y in 0 until height) {
-                val px = bitmap.getPixel(x, y)
-                rotatedBitmap.setPixel(height - y - 1, x, px)
-            }
-        }
-        return rotatedBitmap
-        //var matrix = Matrix()
-        //matrix.postRotate(90.0f)
-
-        //return Bitmap.createBitmap(bitmap!!, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 }
 
@@ -220,4 +183,3 @@ class MainActivity : AppCompatActivity() {
     v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
     insets
 }*/
-
