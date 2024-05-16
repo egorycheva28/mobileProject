@@ -1,18 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg"
-    tools:context=".Activity1">
+    tools:context=".FilterFragment"
+    android:background="@color/bg">
 
     <LinearLayout
         android:id="@+id/up_arrows"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/back_button"
@@ -32,80 +33,72 @@
             android:src="@drawable/save" />
     </LinearLayout>
 
+
     <ImageView
         android:id="@+id/imageViewFirstFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/under_tools"
-        android:layout_below="@id/up_arrows"
-        android:background="@color/black" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="-2dp"
+        android:background="@color/black"
+        app:layout_constraintBottom_toTopOf="@id/framelayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/up_arrows"
+        app:layout_constraintVertical_bias="0.5" />
 
+    <FrameLayout
+        android:id="@+id/framelayout"
+        android:layout_width="match_parent"
+        android:layout_height="74dp"
+        android:background="@color/black"
+        app:layout_constraintBottom_toTopOf="@id/under_tools"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <HorizontalScrollView
         android:id="@+id/under_tools"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_alignParentBottom="true"
-        android:fillViewport="true">
+        android:layout_height="76dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/rotate_button"
                 android:layout_width="120dp"
-                android:layout_height="130dp"
+                android:layout_height="60dp"
                 android:layout_weight="1"
                 android:background="@null"
                 android:src="@drawable/rotate" />
 
             <ImageButton
-                android:id="@+id/bw_button"
+                android:id="@+id/try_to_rotate"
                 android:layout_width="120dp"
-                android:layout_height="130dp"
+                android:layout_height="60dp"
                 android:layout_weight="1"
                 android:background="@null"
-                android:src="@drawable/black_white" />
-
-            <ImageButton
-                android:id="@+id/red_button"
-                android:layout_width="120dp"
-                android:layout_height="130dp"
-                android:layout_weight="1"
-                android:background="@null"
-                android:src="@drawable/red" />
-
-            <ImageButton
-                android:id="@+id/blur_button"
-                android:layout_width="120dp"
-                android:layout_height="130dp"
-                android:layout_weight="1"
-                android:background="@null"
-                android:src="@drawable/blur" />
+                android:src="@drawable/povorot" />
 
             <ImageButton
                 android:id="@+id/filter_button"
                 android:layout_width="120dp"
-                android:layout_height="130dp"
+                android:layout_height="60dp"
                 android:layout_weight="1"
                 android:background="@null"
                 android:src="@drawable/filter" />
 
             <ImageButton
-                android:id="@+id/brightness_button"
-                android:layout_width="120dp"
-                android:layout_height="130dp"
-                android:layout_weight="1"
-                android:background="@null"
-                android:src="@drawable/brightness" />
-
-            <ImageButton
                 android:id="@+id/crop_button"
                 android:layout_width="120dp"
-                android:layout_height="130dp"
+                android:layout_height="60dp"
                 android:layout_weight="1"
                 android:background="@null"
                 android:src="@drawable/scale" />
@@ -113,7 +106,7 @@
             <ImageButton
                 android:id="@+id/face_button"
                 android:layout_width="120dp"
-                android:layout_height="130dp"
+                android:layout_height="60dp"
                 android:layout_weight="1"
                 android:background="@null"
                 android:src="@drawable/face" />
@@ -121,12 +114,12 @@
             <ImageButton
                 android:id="@+id/unsharp_button"
                 android:layout_width="120dp"
-                android:layout_height="130dp"
+                android:layout_height="60dp"
                 android:layout_weight="1"
                 android:background="@null"
                 android:src="@drawable/star" />
-
         </LinearLayout>
     </HorizontalScrollView>
 
-</RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

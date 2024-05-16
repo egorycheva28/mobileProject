@@ -65,14 +65,14 @@
         android:layout_marginHorizontal="50sp"
         android:layout_marginTop="321dp" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50sp"
-        android:fontFamily="@font/montserrat_extralight"
-        android:gravity="center"
-        android:text="#люблюпрофкомцеликом"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp" />
+    <!--    <TextView-->
+    <!--        android:id="@+id/textView2"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="50sp"-->
+    <!--        android:fontFamily="@font/montserrat_extralight"-->
+    <!--        android:gravity="center"-->
+    <!--        android:text="#люблюпрофкомцеликом"-->
+    <!--        android:textColor="#FFFFFF"-->
+    <!--        android:textSize="24sp" />-->
 </RelativeLayout>
