@@ -1,6 +1,7 @@
 package com.example.mobileproject
 
 import android.content.ContentValues
+import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -13,17 +14,36 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Toast
+import org.opencv.android.Utils
+import org.opencv.core.Mat
+import org.opencv.core.MatOfRect
+import org.opencv.core.Rect
+import org.opencv.core.Scalar
+import org.opencv.imgproc.Imgproc
+import org.opencv.objdetect.CascadeClassifier
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 
 
 class Activity1 : AppCompatActivity() {
-    private lateinit var imageView: ImageView
-    private var nBitmap: Bitmap? = null
+    lateinit var imageView: ImageView
+    var nBitmap: Bitmap? = null
+    private lateinit var cascadeClassifier: CascadeClassifier
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity1)
         imageView = findViewById(R.id.imageViewFirstFragment)
+
+//        if (!loadCascade()) {
+//            Toast.makeText(this, "Ошибка загрузки каскадного файла.", Toast.LENGTH_LONG).show()
+//            return
+//        }
+
+
         val imageUri = intent.getStringExtra("imageUri") ?: return
         val inputStream = contentResolver.openInputStream(Uri.parse(imageUri))
         try {
@@ -55,42 +75,6 @@ class Activity1 : AppCompatActivity() {
             } ?: Toast.makeText(this, "No image to rotate", Toast.LENGTH_SHORT).show()
         }
 
-        val buttonBlackAndWhite: ImageButton = findViewById(R.id.bw_button)
-        buttonBlackAndWhite.setOnClickListener {
-            nBitmap?.let { bitmap ->
-                val bwBitmap = convertToBlackAndWhite(bitmap)
-                imageView.setImageBitmap(bwBitmap)
-                nBitmap = bwBitmap
-            } ?: Toast.makeText(this, "No image to use filter on", Toast.LENGTH_SHORT).show()
-        }
-
-        val buttonRed: ImageButton = findViewById(R.id.red_button)
-        buttonRed.setOnClickListener {
-            nBitmap?.let { bitmap ->
-                val redBitmap = convertToRed(bitmap)
-                imageView.setImageBitmap(redBitmap)
-                nBitmap = redBitmap
-            } ?: Toast.makeText(this, "No image to use filter on", Toast.LENGTH_SHORT).show()
-        }
-
-        val buttonBrightness: ImageButton = findViewById(R.id.brightness_button)
-        buttonBrightness.setOnClickListener {
-            nBitmap?.let { bitmap ->
-                val brighterBitmap = makeBrighter(bitmap)
-                imageView.setImageBitmap(brighterBitmap)
-                nBitmap = brighterBitmap
-            } ?: Toast.makeText(this, "No image to use filter on", Toast.LENGTH_SHORT).show()
-        }
-
-        val buttonBlur: ImageButton = findViewById(R.id.blur_button)
-        buttonBlur.setOnClickListener {
-            nBitmap?.let { bitmap ->
-                val gaussBitmap = gaussFilter(bitmap)
-                imageView.setImageBitmap(gaussBitmap)
-                nBitmap = gaussBitmap
-            } ?: Toast.makeText(this, "No image to blur", Toast.LENGTH_SHORT).show()
-        }
-
         val buttonScale: ImageButton = findViewById(R.id.crop_button)
         buttonScale.setOnClickListener {
             nBitmap?.let { bitmap ->
@@ -100,78 +84,23 @@ class Activity1 : AppCompatActivity() {
                 nBitmap = scaledBitmap
             } ?: Toast.makeText(this, "No image to crop", Toast.LENGTH_SHORT).show()
         }
-    }
 
-    private fun convertToBlackAndWhite(bitmap: Bitmap): Bitmap {
-        val width = bitmap.width
-        val height = bitmap.height
-
-        val grayScaling = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-
-        for (x in 0 until width) {
-            for (y in 0 until height) {
-                val pixel = bitmap.getPixel(x, y)
-
-                val red = Color.red(pixel)
-                val green = Color.green(pixel)
-                val blue = Color.blue(pixel)
-
-                val gray = (0.299 * red + 0.587 * green + 0.114 * blue).toInt()
-
-                val newPixel = Color.rgb(gray, gray, gray)
-
-                grayScaling.setPixel(x, y, newPixel)
-            }
+        val buttonFaceDetection: ImageButton = findViewById(R.id.face_button)
+        buttonFaceDetection.setOnClickListener {
+            nBitmap?.let { bitmap ->
+                val mat = Mat()
+                Utils.bitmapToMat(bitmap, mat)
+                val faceBitmap = faceDetection(mat, this) // Передаем this как context
+                val processedBitmap = Bitmap.createBitmap(
+                    faceBitmap.cols(),
+                    faceBitmap.rows(),
+                    Bitmap.Config.ARGB_8888
+                )
+                Utils.matToBitmap(faceBitmap, processedBitmap)
+                imageView.setImageBitmap(processedBitmap)
+                nBitmap = processedBitmap
+            } ?: Toast.makeText(this, "Нет изображения для обработки", Toast.LENGTH_SHORT).show()
         }
-
-        return grayScaling
-    }
-
-    private fun convertToRed(bitmap: Bitmap): Bitmap {
-        val width = bitmap.width
-        val height = bitmap.height
-
-        val redBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-
-        for (x in 0 until width) {
-            for (y in 0 until height) {
-                val pixel = bitmap.getPixel(x, y)
-
-                val red = Color.red(pixel)
-                val newPixel = Color.rgb(red, 0, 0)
-
-                redBitmap.setPixel(x, y, newPixel)
-            }
-        }
-
-        return redBitmap
-    }
-
-    private fun makeBrighter(bitmap: Bitmap): Bitmap {
-        val width = bitmap.width
-        val height = bitmap.height
-
-        val brightBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-
-        for (x in 0 until width) {
-            for (y in 0 until height) {
-                val pixel = bitmap.getPixel(x, y)
-
-                var red = Color.red(pixel) + 40
-                var green = Color.green(pixel) + 40
-                var blue = Color.blue(pixel) + 40
-
-                red = if (red > 255) 255 else red
-                green = if (green > 255) 255 else green
-                blue = if (blue > 255) 255 else blue
-
-                val newPixel = Color.rgb(red, green, blue)
-
-                brightBitmap.setPixel(x, y, newPixel)
-            }
-        }
-
-        return brightBitmap
     }
 
     private fun gaussFilter(bitmap: Bitmap): Bitmap {
@@ -269,4 +198,37 @@ class Activity1 : AppCompatActivity() {
         }
         return rotatedBitmap
     }
+
+    fun faceDetection(input: Mat, context: Context): Mat {
+        val cascadeFile =
+            File(context.getExternalFilesDir(null), "haarcascade_frontalface_alt2.xml")
+        if (!cascadeFile.exists()) {
+            val inputStream: InputStream =
+                context.resources.openRawResource(R.raw.haarcascade_frontalface_alt2)
+            val outputStream: OutputStream = FileOutputStream(cascadeFile)
+
+            val buffer = ByteArray(4096)
+            var bytesRead: Int
+            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                outputStream.write(buffer, 0, bytesRead)
+            }
+            inputStream.close()
+            outputStream.close()
+        }
+
+        val faceCascade = CascadeClassifier(cascadeFile.absolutePath)
+        if (faceCascade.empty()) {
+            println("Error loading cascade: ${cascadeFile.absolutePath}")
+        } else {
+            val faces = MatOfRect()
+            faceCascade.detectMultiScale(input, faces)
+            for (rect: Rect in faces.toArray()) {
+                Imgproc.rectangle(input, rect.tl(), rect.br(), Scalar(0.0, 255.0, 0.0), 2)
+            }
+        }
+
+        return input
+    }
+
+
 }
