@@ -31,7 +31,6 @@ import java.io.OutputStream
 class Activity1 : AppCompatActivity() {
     lateinit var imageView: ImageView
     var nBitmap: Bitmap? = null
-    private lateinit var cascadeClassifier: CascadeClassifier
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,21 +84,52 @@ class Activity1 : AppCompatActivity() {
             } ?: Toast.makeText(this, "No image to crop", Toast.LENGTH_SHORT).show()
         }
 
-        val buttonFaceDetection: ImageButton = findViewById(R.id.face_button)
-        buttonFaceDetection.setOnClickListener {
+        val buttonFace: ImageButton = findViewById(R.id.face_button)
+        buttonFace.setOnClickListener {
+            val faceFragment = FaceFragment()
+            val bundle = Bundle().apply {
+                putParcelable("imageBitmap", nBitmap)
+            }
+            faceFragment.arguments = bundle
+
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.framelayout, faceFragment)
+                .commit()
+        }
+
+        val buttonFilter: ImageButton = findViewById(R.id.filter_button)
+        buttonFilter.setOnClickListener {
+            val filterFragment = FilterFragment()
+            val bundle = Bundle().apply {
+                putParcelable("imageBitmap", nBitmap)
+            }
+            filterFragment.arguments = bundle
+
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.framelayout, filterFragment)
+                .commit()
+        }
+
+        val buttonRotate1: ImageButton = findViewById(R.id.rotate_button)
+        buttonRotate1.setOnClickListener {
+            val rotateFragment = RotateFragment()
+            val bundle = Bundle().apply {
+                putParcelable("imageBitmap", nBitmap)
+            }
+            rotateFragment.arguments = bundle
+
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.framelayout, rotateFragment)
+                .commit()
+        }
+
+        val buttonMaska: ImageButton = findViewById(R.id.unsharp_button)
+        buttonMaska.setOnClickListener {
             nBitmap?.let { bitmap ->
-                val mat = Mat()
-                Utils.bitmapToMat(bitmap, mat)
-                val faceBitmap = faceDetection(mat, this) // Передаем this как context
-                val processedBitmap = Bitmap.createBitmap(
-                    faceBitmap.cols(),
-                    faceBitmap.rows(),
-                    Bitmap.Config.ARGB_8888
-                )
-                Utils.matToBitmap(faceBitmap, processedBitmap)
-                imageView.setImageBitmap(processedBitmap)
-                nBitmap = processedBitmap
-            } ?: Toast.makeText(this, "Нет изображения для обработки", Toast.LENGTH_SHORT).show()
+                val result = maska(bitmap);
+                imageView.setImageBitmap(result)
+                nBitmap = result
+            } ?: Toast.makeText(this, "No image to mask", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -198,37 +228,34 @@ class Activity1 : AppCompatActivity() {
         }
         return rotatedBitmap
     }
+    private fun maska(bitmap: Bitmap?): Bitmap {
+        val width = bitmap!!.width
+        val height = bitmap!!.height
+        var newbit = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        newbit = gaussFilter(bitmap!!);
+        var maska = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                val pixel1 = bitmap!!.getPixel(x, y)
+                val pixel2 = newbit.getPixel(x, y)
 
-    fun faceDetection(input: Mat, context: Context): Mat {
-        val cascadeFile =
-            File(context.getExternalFilesDir(null), "haarcascade_frontalface_alt2.xml")
-        if (!cascadeFile.exists()) {
-            val inputStream: InputStream =
-                context.resources.openRawResource(R.raw.haarcascade_frontalface_alt2)
-            val outputStream: OutputStream = FileOutputStream(cascadeFile)
+                val red1 = Color.red(pixel1)
+                val green1 = Color.green(pixel1)
+                val blue1 = Color.blue(pixel1)
 
-            val buffer = ByteArray(4096)
-            var bytesRead: Int
-            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                outputStream.write(buffer, 0, bytesRead)
+                val red2 = Color.red(pixel2)
+                val green2 = Color.green(pixel2)
+                val blue2 = Color.blue(pixel2)
+
+                val diffRed = Math.abs(red1 - red2) * 2 + red1
+                val diffGreen = Math.abs(green1 - green2) * 2 + green1
+                val diffBlue = Math.abs(blue1 - blue2) * 2 + blue1
+
+                val resultPixel = Color.rgb(diffRed, diffGreen, diffBlue)
+                maska.setPixel(x, y, resultPixel)
             }
-            inputStream.close()
-            outputStream.close()
         }
 
-        val faceCascade = CascadeClassifier(cascadeFile.absolutePath)
-        if (faceCascade.empty()) {
-            println("Error loading cascade: ${cascadeFile.absolutePath}")
-        } else {
-            val faces = MatOfRect()
-            faceCascade.detectMultiScale(input, faces)
-            for (rect: Rect in faces.toArray()) {
-                Imgproc.rectangle(input, rect.tl(), rect.br(), Scalar(0.0, 255.0, 0.0), 2)
-            }
-        }
-
-        return input
+        return maska;
     }
-
-
 }
