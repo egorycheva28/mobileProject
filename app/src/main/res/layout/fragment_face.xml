@@ -72,6 +72,14 @@
                     android:background="@null"
                     android:src="@drawable/saturation" />
 
+                <ImageButton
+                    android:id="@+id/cancel_face_button"
+                    android:layout_width="100dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:src="@drawable/x" />
+
             </LinearLayout>
         </HorizontalScrollView>
 

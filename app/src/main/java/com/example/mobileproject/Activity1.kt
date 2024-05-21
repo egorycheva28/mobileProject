@@ -31,6 +31,7 @@ import java.io.OutputStream
 class Activity1 : AppCompatActivity() {
     lateinit var imageView: ImageView
     var nBitmap: Bitmap? = null
+    var nBitmapOriginal: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +50,7 @@ class Activity1 : AppCompatActivity() {
             val bitmap = BitmapFactory.decodeStream(inputStream)
             imageView.setImageBitmap(bitmap)
             nBitmap = bitmap // сохранить bitmap в переменную
+            nBitmapOriginal = nBitmap
         } finally {
             inputStream?.close()
         }
@@ -56,6 +58,14 @@ class Activity1 : AppCompatActivity() {
         val buttonBack: ImageButton = findViewById(R.id.back_button)
         buttonBack.setOnClickListener {
             finish() // для закрытия текущей активности
+        }
+
+        val buttonReset: ImageButton = findViewById(R.id.reset_button)
+        buttonReset.setOnClickListener {
+            nBitmap?.let {
+                nBitmap = nBitmapOriginal
+                imageView.setImageBitmap(nBitmap)
+            } ?: Toast.makeText(this, "Image not available", Toast.LENGTH_SHORT).show()
         }
 
         val buttonSave: ImageButton = findViewById(R.id.save_button)

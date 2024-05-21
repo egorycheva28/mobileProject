@@ -22,7 +22,13 @@
             android:layout_weight="1"
             android:background="@null"
             android:src="@drawable/back" />
-
+        <ImageButton
+            android:id="@+id/reset_button"
+            android:layout_width="0dp"
+            android:layout_height="90dp"
+            android:layout_weight="1.5"
+            android:background="@null"
+            android:src="@drawable/reset" />
 
         <ImageButton
             android:id="@+id/save_button"

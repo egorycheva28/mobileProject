@@ -24,6 +24,7 @@ import java.io.OutputStream
 
 class FaceFragment : Fragment() {
     private var nBitmap: Bitmap? = null
+    private var nBitmapBefore: Bitmap? = null
     private var faces: List<Rect>? = null
 
     val cascadePath = "haarcascade_frontalface_alt2.xml"
@@ -33,6 +34,7 @@ class FaceFragment : Fragment() {
         arguments?.let {
             nBitmap = it.getParcelable("imageBitmap")
         }
+        nBitmapBefore = nBitmap
     }
 
     override fun onCreateView(
@@ -121,6 +123,16 @@ class FaceFragment : Fragment() {
                 (activity as? Activity1)?.let {
                     it.imageView.setImageBitmap(saturationBitmap)
                     it.nBitmap = saturationBitmap
+                } ?: Toast.makeText(activity, "No image to use filter on", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+        val buttonCancelFace: ImageButton = view.findViewById(R.id.cancel_face_button)
+        buttonCancelFace.setOnClickListener {
+            nBitmap?.let { bitmap ->
+                (activity as? Activity1)?.let {
+                    it.imageView.setImageBitmap(nBitmapBefore)
+                    it.nBitmap = nBitmapBefore
                 } ?: Toast.makeText(activity, "No image to use filter on", Toast.LENGTH_SHORT)
                     .show()
             }
