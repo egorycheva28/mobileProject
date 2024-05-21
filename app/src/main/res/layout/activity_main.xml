@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="50sp"
-        android:layout_marginTop="130sp"
+        android:layout_marginTop="70sp"
         android:src="@drawable/bg_welcome" />
 
     <ImageButton
@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/welcome_bg"
-        android:layout_marginTop="50sp"
+        android:layout_marginTop="20sp"
         android:layout_centerHorizontal="true"
         android:background="@null"
         android:src="@drawable/cam" />
@@ -41,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/open_camera_text"
-        android:layout_marginTop="30sp"
+        android:layout_marginTop="20sp"
         android:layout_centerHorizontal="true"
         android:background="@null"
         android:src="@drawable/gal" />
@@ -57,22 +57,26 @@
         android:textAlignment="center"
         android:textColor="@color/white" />
 
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="133dp"
-        android:layout_height="134dp"
-        android:layout_below="@+id/welcome_bg"
-        android:layout_marginHorizontal="50sp"
-        android:layout_marginTop="321dp" />
+    <ImageButton
+        android:id="@+id/spline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/import_gallery_text"
+        android:layout_marginTop="20sp"
+        android:layout_centerHorizontal="true"
+        android:background="@null"
+        android:src="@drawable/spline" />
 
-    <!--    <TextView-->
-    <!--        android:id="@+id/textView2"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginTop="50sp"-->
-    <!--        android:fontFamily="@font/montserrat_extralight"-->
-    <!--        android:gravity="center"-->
-    <!--        android:text="#люблюпрофкомцеликом"-->
-    <!--        android:textColor="#FFFFFF"-->
-    <!--        android:textSize="24sp" />-->
+    <TextView
+        android:id="@+id/spline_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spline"
+        android:layout_marginTop="10sp"
+        android:fontFamily="@font/montserrat_extralight"
+        android:text="@string/spline_text"
+        android:textAlignment="center"
+        android:textColor="@color/white" />
+
+
 </RelativeLayout>
