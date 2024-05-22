@@ -36,6 +36,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         //enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
+        val buttonSplain: Button = findViewById(R.id.canvas)
+        buttonSplain.setOnClickListener {
+            startActivity(Intent(this, Cavas::class.java))
+            finish()
+        }
+
         permissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions())
             { permissions ->
@@ -87,6 +94,8 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
+
+
         /*val ButtonTurn = findViewById(R.id.rotate) as Button
         ButtonTurn.setOnClickListener {
             val bitmap = nBitmap
@@ -97,6 +106,7 @@ class MainActivity : AppCompatActivity() {
 
         }*/
     }
+
 
     private fun requestPermission() {
         isReadPermissionGallery = ContextCompat.checkSelfPermission(

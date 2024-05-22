@@ -127,6 +127,25 @@ class Activity1 : AppCompatActivity() {
         return grayScaling
     }
 
+
+    fun scaleBitmap(inputBitmap: Bitmap, scaleFactor: Double): Bitmap {
+
+        val inputWidth = inputBitmap.width
+        val inputHeight = inputBitmap.height
+        val outputWidth = (inputWidth * scaleFactor).toInt()
+        val outputHeight = (inputHeight * scaleFactor).toInt()
+        val outputBitmap = Bitmap.createBitmap(outputWidth, outputHeight, Bitmap.Config.ARGB_8888)
+        val scaleX = inputWidth.toFloat() / outputWidth.toFloat()
+        val scaleY = inputHeight.toFloat() / outputHeight.toFloat()
+        for (x in 0 until outputWidth) {
+            for (y in 0 until outputHeight) {
+                val srcX = (x * scaleX).toInt()
+                val srcY = (y * scaleY).toInt()
+                outputBitmap.setPixel(x, y, inputBitmap.getPixel(srcX, srcY))
+            }
+        }
+        return outputBitmap    }
+
     private fun convertToRed(bitmap: Bitmap): Bitmap {
         val width = bitmap.width
         val height = bitmap.height
