@@ -28,6 +28,8 @@ class FaceFragment : Fragment() {
     private var faces: List<Rect>? = null
 
     val cascadePath = "haarcascade_frontalface_alt2.xml"
+//    val cascadePath = "haarcascade_frontalface_alt_tree.xml"
+//    val cascadePath = "haarcascade_frontalcatface_extended.xml"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

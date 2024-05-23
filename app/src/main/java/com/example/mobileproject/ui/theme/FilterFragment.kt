@@ -42,6 +42,7 @@ class FilterFragment : Fragment() {
                 }
             } ?: Toast.makeText(activity, "No image to use filter on", Toast.LENGTH_SHORT).show()
         }
+
         val buttonBrightness: ImageButton = view.findViewById(R.id.brightness_button)
         buttonBrightness.setOnClickListener {
             nBitmap?.let { bitmap ->
@@ -53,6 +54,7 @@ class FilterFragment : Fragment() {
                 }
             } ?: Toast.makeText(activity, "No image to use filter on", Toast.LENGTH_SHORT).show()
         }
+
         val buttonInversion: ImageButton = view.findViewById(R.id.inversion_button)
         buttonInversion.setOnClickListener {
             nBitmap?.let { bitmap ->

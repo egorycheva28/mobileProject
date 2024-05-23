@@ -102,6 +102,12 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
+
+        val buttonSplain: ImageButton = findViewById(R.id.spline)
+        buttonSplain.setOnClickListener {
+            startActivity(Intent(this, Cavas::class.java))
+            finish()
+        }
     }
 
     private fun requestPermission() {
