@@ -1,16 +1,10 @@
 package com.example.mobileproject
 
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import android.widget.Button
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.net.Uri
 import android.widget.ImageView
 import android.graphics.Bitmap
@@ -19,64 +13,88 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import java.io.ByteArrayOutputStream
 import java.io.IOException
 
-class MainActivity3 : AppCompatActivity() {
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var buttons: ArrayList<Filters>
-    private lateinit var adapter: Adapter
+class MainActivity3 : AppCompatActivity(), FirstFragment.OnSeekBarChangeListener1/*, MaskingFragment.OnSeekBarChangeListener2*/ {
+    //private lateinit var recyclerView: RecyclerView
+    //private lateinit var buttons: ArrayList<Filters>
+    //private lateinit var adapter: Adapter
     private lateinit var framelayout: FrameLayout;
     //private lateinit var imageView: ImageView
     private var imageBitmap1: Bitmap? = null
-    private lateinit var imageView:ImageView
+    private lateinit var imageView: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main3)
         //вывод изображения
-        imageView = findViewById(R.id.imageView3)
-        val imageUri = intent.getStringExtra("imageUri")
-        imageView.setImageURI(Uri.parse(imageUri))
-        imageBitmap1 = BitmapFactory.decodeFile(imageUri)
+        //imageView = findViewById(R.id.imageView3)
+        //val imageUri = intent.getStringExtra("imageUri")
+        //imageView.setImageURI(Uri.parse(imageUri))
+        //imageBitmap1 = BitmapFactory.decodeFile(imageUri)
 
-        val buttonMaska=findViewById(R.id.unsharp_button)as ImageButton
-        buttonMaska.setOnClickListener{
-            //var result=Bitmap.createBitmap(imageBitmap1!!.width, imageBitmap1!!.height, Bitmap.Config.ARGB_8888);
-            val result=maska(imageBitmap1);
+        imageView = findViewById(R.id.imageView3)
+        val imageUri = intent.getStringExtra("imageUri") ?: return
+        val inputStream = contentResolver.openInputStream(Uri.parse(imageUri))
+        try {
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            imageView.setImageBitmap(bitmap)
+            imageBitmap1 = bitmap // сохранить bitmap в переменную
+        } finally {
+            inputStream?.close()
+        }
+
+        val buttonMasking=findViewById(R.id.unsharp_button1)as ImageButton
+        buttonMasking.setOnClickListener{
+            //val maskingFragment=MaskingFragment()
+            //setNewFragment(maskingFragment);
+            var result=Bitmap.createBitmap(imageBitmap1!!.width, imageBitmap1!!.height, Bitmap.Config.ARGB_8888);
+            result= Masking(imageBitmap1,0.4,3,0.4)
             imageView.setImageBitmap(result)
         }
 
         val buttonSave = findViewById(R.id.save2) as Button
         buttonSave.setOnClickListener {
             saveImageToGallery(imageBitmap1!!)
-
         }
 
         val buttonRotate = findViewById(R.id.rotate_button) as ImageButton
         buttonRotate.setOnClickListener {
             val firstFragment=FirstFragment()
             setNewFragment(firstFragment);
-            /*var bitmap1 = imageBitmap1
-            var newBitmap1 = rotateImage(bitmap1);
-            imageBitmap1 = newBitmap1;
+            //val matrix= bitmapToMatrix(imageBitmap1!!);
+            //var newBitmap=Bitmap.createBitmap(imageBitmap1!!.height, imageBitmap1!!.width, Bitmap.Config.ARGB_8888);
+            //newBitmap= matrixToBitmap(rotateImage(matrix,90,imageBitmap1!!.width.toDouble(),imageBitmap1!!.height.toDouble()));
+            //imageView.setImageBitmap(newBitmap)
+            //var n=rotateImage(matrix,50,89.0,8.9,8.9)
+            //var newBitmap=Bitmap.createBitmap(imageBitmap1!!.width, imageBitmap1!!.height, Bitmap.Config.ARGB_8888);
+            //newBitmap= matrixToBitmap(n);
+            //var bitmap1 = imageBitmap1
+            //var newBitmap1 = rotateImage(bitmap1);
+            //imageBitmap1 = newBitmap1;
             //val uriimage=bitmapToUri(this,newBitmap)
             //val imageView1 = findViewById(R.id.imageView3) as ImageView
             //imageView1.setImageURI(uriimage)
-            imageView.setImageBitmap(imageBitmap1)*/
+            //imageBitmap1=rotateImage(matrix,60,imageBitmap1!!.width.toDouble(),imageBitmap1!!.height.toDouble());
+            //imageView.setImageBitmap(imageBitmap1)
+            //imageView.setImageBitmap(rotateImage(imageBitmap1!!,90,imageBitmap1!!.width.toDouble(),imageBitmap1!!.height.toDouble()))
+            //imageView.setImageBitmap(gaussFilter(imageBitmap1!!,2))
         }
         val buttonFilter =findViewById(R.id.filter_button)as ImageButton
         buttonFilter.setOnClickListener{
             val secondFragment=SecondFragment()
             setNewFragment(secondFragment);
+
+
+        }
+        val buttonCrop =findViewById(R.id.crop_button)as ImageButton
+        buttonCrop.setOnClickListener{
+            //val thirdFragment=ThirdFragment()
+            //setNewFragment(thirdFragment);
+            //imageView.setImageBitmap(gaussFilter(imageBitmap1!!,3))
         }
         //framelayout=findViewById(R.id.framelayout);
 
@@ -86,46 +104,56 @@ class MainActivity3 : AppCompatActivity() {
             startActivity(activity)
         }
     }
+    override fun onSeekBarValueChange(value: Int) {
+        //val matrix= bitmapToMatrix(imageBitmap1!!);
+        //imageBitmap1=rotateImage(matrix,value,imageBitmap1!!.width.toDouble(),imageBitmap1!!.height.toDouble());
+        imageView.setImageBitmap(rotateImage(imageBitmap1!!,value,imageBitmap1!!.width.toDouble(),imageBitmap1!!.height.toDouble()))
+        //Toast.makeText(this, "SeekBar Value: $value", Toast.LENGTH_SHORT).show()
+
+    }
+    /*override fun onSeekBarValueChange1(value1: Double,value2:Double,value3:Double) {
+        imageBitmap1?.let { bitmap ->
+                //val result=Masking(imageBitmap1);
+                imageBitmap1=Masking(imageBitmap1, value1,value2,value3);
+            imageView.setImageBitmap(imageBitmap1);
+
+
+            } ?: Toast.makeText(this, "No image to crop", Toast.LENGTH_SHORT).show()
+    }*/
+    private fun convertToRed(bitmap: Bitmap): Bitmap {
+        val width = bitmap.width
+        val height = bitmap.height
+
+        val redBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                val pixel = bitmap.getPixel(x, y)
+
+                val red = Color.red(pixel)
+                val newPixel = Color.rgb(red, 0, 0)
+
+                redBitmap.setPixel(x, y, newPixel)
+            }
+        }
+
+        return redBitmap
+    }
+    fun ggg()
+    {
+        imageBitmap1?.let { bitmap ->
+            val redBitmap = convertToRed(bitmap)
+            imageView.setImageBitmap(redBitmap)
+            imageBitmap1 = redBitmap
+        } ?: Toast.makeText(this, "No image to use filter on", Toast.LENGTH_SHORT).show()
+    }
     private fun setNewFragment(fragment: Fragment) {
 
         getSupportFragmentManager().beginTransaction()
             .replace(R.id.framelayout, fragment)
             .commit();
     }
-    private fun maska(bitmap: Bitmap?): Bitmap
-    {
-        val width=imageBitmap1!!.width
-        val height=imageBitmap1!!.height
-        var newbit=Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        newbit=gaussFilter(imageBitmap1!!);
-        var maska=Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        for(x in 0 until width)
-        {
-            for(y in 0 until height)
-            {
-                val pixel1 = imageBitmap1!!.getPixel(x, y)
-                val pixel2 = newbit.getPixel(x, y)
 
-                val red1 = Color.red(pixel1)
-                val green1 = Color.green(pixel1)
-                val blue1 = Color.blue(pixel1)
-
-                val red2 = Color.red(pixel2)
-                val green2 = Color.green(pixel2)
-                val blue2 = Color.blue(pixel2)
-
-                val diffRed = Math.abs(red1 - red2)*2+red1
-                val diffGreen = Math.abs(green1 - green2)*2+green1
-                val diffBlue = Math.abs(blue1 - blue2)*2+blue1
-
-                val resultPixel = Color.rgb(diffRed, diffGreen, diffBlue)
-                maska.setPixel(x,y,resultPixel)
-            }
-        }
-
-
-        return maska;
-    }
     private fun saveImageToGallery(bitmap: Bitmap) {
         val resolver = contentResolver
         val fileName = System.currentTimeMillis().toString() + ".png"
