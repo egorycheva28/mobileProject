@@ -42,7 +42,7 @@ fun matrixToBitmap(matrix: Array<Array<PixelRGB>>): Bitmap {
 }
 
 fun rotateImage(
-    /*matrix: Array<Array<PixelRGB>>*/
+    /* matrix: Array<Array<PixelRGB>>*/
     bitmap: Bitmap,
     angle: Int,
     width: Double,
@@ -149,15 +149,15 @@ fun rotateImage(
         for (j in 0 until newY) {
             if (j < height && i < width) {
                 val x =
-                    centerX + (i - centerX) * cos(radian) - (j - centerY) * sin(
+                    (centerX + (i - centerX) * cos(radian) - (j - centerY) * sin(
                         radian
-                    )
-                val y =
-                    centerY + (j - centerY) * cos(radian) + (i - centerX) * sin(
+                    )).toInt()
+                var y =
+                    (centerY + (j - centerY) * cos(radian) + (i - centerX) * sin(
                         radian
-                    )
-                //val newI = (x - minRow).toInt()
-                //var newJ = (y - minCol).toInt()
+                    )).toInt()
+                //val x = (x1 - minRow).toInt()
+                //var y = (y1 - minCol).toInt()
                 //val intNew = newI.toInt()
                 //val intNew2 = newJ.toInt()
 
@@ -170,46 +170,123 @@ fun rotateImage(
                 //println(bit.width)//241
                 //println(bit.height) // 240
 
-                if (x.toInt() in 0..<newX && y.toInt() in 0..<newY) {
+                if (x in 0..<newX && y in 0..<newY) {
 
                     val pixel = bitmap.getPixel(i, j)
                     val color = Color.argb(255, pixel.red, pixel.green, pixel.blue)
-                    bit.setPixel(x.toInt(), y.toInt(), color)
+                    bit.setPixel(x, y, color)
 
+                    if (angle in 0..180 && i > 0 && j > 0) {
+
+                        while (y > 0 && Color.alpha(bit.getPixel(x, y - 1)) == 0) {
+                            y--;
+                        }
+                    } else if (i > 0 && j > 0) {
+                        while (y + 1 < newY && Color.alpha(bit.getPixel(x, y + 1)) == 0) {
+                            y++;
+                        }
+                    }
+                    bit.setPixel(x, y, bitmap.getPixel(i, j))
+                    /* for (ii in 0 until newY) {
+                         for (ji in 0 until newX) {
+                             if (ii < width && ji < height) {
+                                 var newX1 = ji
+                                 val newY1 = ii
+
+                                 if(newX1<newX && newY1<newY) {
+                                     if (angle >= 0 && angle <= 180) {
+                                         while (newX1 > 0 && Color.alpha(
+                                                 bit.getPixel(
+                                                     newX1 - 1,
+                                                     newY1
+                                                 )
+                                             ) == 0
+                                         ) {
+                                             newX1--
+                                         }
+                                     } else {
+                                         while (newX1 + 1 < newX && Color.alpha(
+                                                 bit.getPixel(
+                                                     newX1 + 1,
+                                                     newY1
+                                                 )
+                                             ) == 0
+                                         ) {
+                                             newX1++
+                                         }
+                                     }
+
+                                     bit.setPixel(newX1, newY1, bitmap.getPixel(ji, ii))
+                                 }
+                             }
+                         }
+                     }*/
                     //println(intNew)
                     //println(intNew2)
                     //println(i)
                     //println(j)
                     //matrixNew[newI][newJ] = matrix[i][j]
+                    /*if (angle in 0..180 && y > 0 && y<height && x<width) {
+                            val pixel1 = bitmap.getPixel(x, y-1)
 
+                            val pixel3 = bitmap.getPixel(x+1, y+1)
+                            if (y > 0 && pixel1.blue == -1 && pixel1.green == -1 && pixel1.red == -1) {
+                                if (i > 0 && j > 0) {
+                                    while (pixel1.blue == -1 && pixel1.green == -1 && pixel1.red == -1) {
+                                        y--;
+                                        if (pixel3.blue != -1 && pixel3.green != -1 && pixel3.red != -1) {
+                                            break;
+                                        }
+                                    }
+                                    bit.setPixel(x.toInt(), y.toInt(), color)
+                                }
+                            }
+
+                        } else if(x>0&& y>0 && y<height && x<width){
+                            val pixel2 = bitmap.getPixel(x, y+1)
+                            val pixel4 = bitmap.getPixel(x-1, y-1)
+                            if (y + 1 < newY && pixel2.blue == -1 && pixel2.green == -1 && pixel2.red == -1) {
+
+                                if (i > 0 && j > 0) {
+                                    while (pixel2.blue == -1 && pixel2.green == -1 && pixel2.red == -1) {
+                                        y++;
+                                        if (pixel4.blue != -1 && pixel4.green != -1 && pixel4.red != -1) {
+                                            break;
+                                        }
+                                    }
+                                    bit.setPixel(x.toInt(), y.toInt(), color)
+                                }
+
+                            }
+                        }*/
                     /*if (angle in 0..180) {
-                        if (newJ > 0 && matrixNew[newI][newJ - 1].blue == -1 && matrixNew[newI][newJ - 1].green == -1 && matrixNew[newI][newJ - 1].red == -1) {
-                            if (i > 0 && j > 0) {
-                                while (matrixNew[newI][newJ - 1].blue == -1 && matrixNew[newI][newJ - 1].green == -1 && matrixNew[newI][newJ - 1].red == -1) {
-                                    newJ--;
-                                    if (matrixNew[newI + 1][newJ + 1].blue != -1 && matrixNew[newI + 1][newJ + 1].green != -1 && matrixNew[newI + 1][newJ + 1].red != -1) {
-                                        break;
+                            if (newJ > 0 && matrixNew[newI][newJ - 1].blue == -1 && matrixNew[newI][newJ - 1].green == -1 && matrixNew[newI][newJ - 1].red == -1) {
+                                if (i > 0 && j > 0) {
+                                    while (matrixNew[newI][newJ - 1].blue == -1 && matrixNew[newI][newJ - 1].green == -1 && matrixNew[newI][newJ - 1].red == -1) {
+                                        newJ--;
+                                        if (matrixNew[newI + 1][newJ + 1].blue != -1 && matrixNew[newI + 1][newJ + 1].green != -1 && matrixNew[newI + 1][newJ + 1].red != -1) {
+                                            break;
+                                        }
                                     }
+                                    matrixNew[newI][newJ] = matrix[i][j]
                                 }
-                                matrixNew[newI][newJ] = matrix[i][j]
-                            }
-                        }
-
-                    } else {
-                        if (newJ + 1 < newY && matrixNew[newI][newJ + 1].blue == -1 && matrixNew[newI][newJ + 1].green == -1 && matrixNew[newI][newJ + 1].red == -1) {
-
-                            if (i > 0 && j > 0) {
-                                while (matrixNew[newI][newJ + 1].blue == -1 && matrixNew[newI][newJ + 1].green == -1 && matrixNew[newI][newJ + 1].red == -1) {
-                                    newJ++;
-                                    if (matrixNew[newI - 1][newJ - 1].blue != -1 && matrixNew[newI - 1][newJ - 1].green != -1 && matrixNew[newI - 1][newJ - 1].red != -1) {
-                                        break;
-                                    }
-                                }
-                                matrixNew[newI][newJ] = matrix[i][j];
                             }
 
-                        }
-                    }*/
+                        } else {
+                            if (newJ + 1 < newY && matrixNew[newI][newJ + 1].blue == -1 && matrixNew[newI][newJ + 1].green == -1 && matrixNew[newI][newJ + 1].red == -1) {
+
+                                if (i > 0 && j > 0) {
+                                    while (matrixNew[newI][newJ + 1].blue == -1 && matrixNew[newI][newJ + 1].green == -1 && matrixNew[newI][newJ + 1].red == -1) {
+                                        newJ++;
+                                        if (matrixNew[newI - 1][newJ - 1].blue != -1 && matrixNew[newI - 1][newJ - 1].green != -1 && matrixNew[newI - 1][newJ - 1].red != -1) {
+                                            break;
+                                        }
+                                    }
+                                    matrixNew[newI][newJ] = matrix[i][j];
+                                }
+
+                            }
+                        }*/
                 }
 
             }
