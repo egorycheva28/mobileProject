@@ -22,15 +22,29 @@
 
         <SeekBar
             android:id="@+id/seekBar"
-            android:layout_width="398dp"
+            android:layout_width="292dp"
             android:layout_height="74dp"
-            android:progressTint="@color/elipse_color"
-            android:thumbTint="@color/white"
+            android:max="360"
 
+            android:progress="0"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textView2"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.765" />
+            app:layout_constraintVertical_bias="0.345" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="56dp"
+            android:layout_height="24dp"
+            android:text="0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.948"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.35" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
