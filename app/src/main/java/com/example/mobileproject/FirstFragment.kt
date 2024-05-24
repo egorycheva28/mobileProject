@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 class FirstFragment : Fragment() {
     interface OnSeekBarChangeListener1 {
-        fun onSeekBarValueChange(value: Int)
+        fun onSeekBarValueChange1(value: Int)
     }
 
     private var listener: OnSeekBarChangeListener1? = null
@@ -35,7 +35,7 @@ class FirstFragment : Fragment() {
         val seekBarValue = view.findViewById<TextView>(R.id.textView2)
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                listener?.onSeekBarValueChange(progress)
+                listener?.onSeekBarValueChange1(progress)
                 seekBarValue.text = "$progress"
             }
 

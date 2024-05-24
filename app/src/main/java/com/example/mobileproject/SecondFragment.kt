@@ -12,10 +12,10 @@ class SecondFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val activity = requireActivity() as MainActivity3
-        val button1 = requireView().findViewById(R.id.filter_button1) as ImageButton
+        /*val button1 = requireView().findViewById(R.id.filter_button1) as ImageButton
         button1.setOnClickListener {
             activity.ggg();
-        }
+        }*/
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
