@@ -49,6 +49,14 @@
                     android:src="@drawable/inversion" />
 
                 <ImageButton
+                    android:id="@+id/sepia_button"
+                    android:layout_width="100dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:src="@drawable/sepia" />
+
+                <ImageButton
                     android:id="@+id/mosaic_button"
                     android:layout_width="100dp"
                     android:layout_height="60dp"

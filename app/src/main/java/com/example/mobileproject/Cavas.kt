@@ -9,8 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 
 
 class Cavas : AppCompatActivity() {
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.spline)
@@ -24,6 +22,11 @@ class Cavas : AppCompatActivity() {
         }
         clearButton.setOnClickListener {
             myView.clearCanvas()
+        }
+
+        val btnFigure = findViewById<ImageButton>(R.id.figure_button)
+        btnFigure.setOnClickListener {
+            myView.drawPseudoPolygon()
         }
 
         val btnGoBack = findViewById<ImageButton>(R.id.btnGoBack)
