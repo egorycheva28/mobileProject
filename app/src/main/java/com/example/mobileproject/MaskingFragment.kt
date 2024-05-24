@@ -40,44 +40,42 @@ class MaskingFragment : Fragment() {
         val seekBar1 = view.findViewById<SeekBar>(R.id.seekBar3)
         val seekBar2 = view.findViewById<SeekBar>(R.id.seekBar4)
         val seekBar3 = view.findViewById<SeekBar>(R.id.seekBar5)
-        val seekBarValue1 = view.findViewById<TextView>(R.id.textView5)
-        val seekBarValue2 = view.findViewById<TextView>(R.id.textView4)
-        val seekBarValue3 = view.findViewById<TextView>(R.id.textView3)
+
 
         seekBar1.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+            override fun onProgressChanged(seekBar1: SeekBar, progress: Int, fromUser: Boolean) {
                 progress1 = progress
                 listener?.onSeekBarValueChange2(progress1, progress2, progress3)
-                seekBarValue1.text = "$progress"
+
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStartTrackingTouch(seekBar1: SeekBar) {}
 
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar1: SeekBar) {}
         })
 
         seekBar2.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+            override fun onProgressChanged(seekBar2: SeekBar, progress: Int, fromUser: Boolean) {
                 progress2 = progress
                 listener?.onSeekBarValueChange2(progress1, progress2, progress3)
-                seekBarValue2.text = "$progress"
+
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStartTrackingTouch(seekBar2: SeekBar) {}
 
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar2: SeekBar) {}
         })
 
         seekBar3.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+            override fun onProgressChanged(seekBar3: SeekBar, progress: Int, fromUser: Boolean) {
                 progress3 = progress
                 listener?.onSeekBarValueChange2(progress1, progress2, progress3)
-                seekBarValue3.text = "$progress"
+
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStartTrackingTouch(seekBar3: SeekBar) {}
 
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar3: SeekBar) {}
         })
     }
 
@@ -85,6 +83,6 @@ class MaskingFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_first2, container, false)
+        return inflater.inflate(R.layout.fragment_masking, container, false)
     }
 }

@@ -49,13 +49,13 @@ class MainActivity3 : AppCompatActivity(),
 
         val buttonMasking = findViewById(R.id.unsharp_button1) as ImageButton
         buttonMasking.setOnClickListener {
-            //val maskingFragment=MaskingFragment()
-            //setNewFragment(maskingFragment);
+            val maskingFragment=MaskingFragment()
+            setNewFragment(maskingFragment);
             //var result=Bitmap.createBitmap(imageBitmap1!!.width, imageBitmap1!!.height, Bitmap.Config.ARGB_8888);
-            imageBitmap1 = Masking(
+            /*imageBitmap1 = Masking(
                 imageBitmap1, 0.25, 3, 100.0
             )
-            imageView.setImageBitmap(imageBitmap1)
+            imageView.setImageBitmap(imageBitmap1)*/
             //imageBitmap1= maska(imageBitmap1)
             //imageView.setImageBitmap(imageBitmap1)
         }
@@ -129,11 +129,12 @@ class MainActivity3 : AppCompatActivity(),
 
     override fun onSeekBarValueChange2(progress1: Int, progress2: Int, progress3: Int) {
         imageBitmap1 =
-            Masking(imageBitmap1, progress1.toDouble() / 10.0, progress2, progress3.toDouble())
+            Masking(imageBitmap2, progress1.toDouble() / 10.0, progress2, progress3.toDouble())
+        imageView.setImageBitmap(imageBitmap1)
     }
     override fun onSeekBarValueChange3(value: Int) {//для масштабирования
-        imageBitmap1 =
-            Scaling(imageBitmap1, value)
+        //imageBitmap1 =
+           // Scaling(imageBitmap1, value)
     }
 
     /*override fun onSeekBarValueChange1(value1: Double,value2:Double,value3:Double) {
