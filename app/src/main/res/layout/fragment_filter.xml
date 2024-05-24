@@ -57,6 +57,14 @@
                     android:src="@drawable/sepia" />
 
                 <ImageButton
+                    android:id="@+id/contrast_button"
+                    android:layout_width="100dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:src="@drawable/contr" />
+
+                <ImageButton
                     android:id="@+id/mosaic_button"
                     android:layout_width="100dp"
                     android:layout_height="60dp"

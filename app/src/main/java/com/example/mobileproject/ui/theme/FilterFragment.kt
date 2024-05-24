@@ -79,6 +79,17 @@ class FilterFragment : Fragment() {
             }
         }
 
+        val buttonContrast: ImageButton = view.findViewById(R.id.contrast_button)
+        buttonContrast.setOnClickListener {
+            nBitmap?.let { bitmap ->
+                val result = contrast(bitmap, 2.0f);
+                (activity as? Activity1)?.let {
+                    it.imageView.setImageBitmap(result)
+                    it.nBitmap = result
+                } ?: Toast.makeText(activity, "@strings/no_image", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         val buttonMosaic: ImageButton = view.findViewById(R.id.mosaic_button)
         buttonMosaic.setOnClickListener {
             nBitmap?.let { bitmap ->
@@ -189,15 +200,15 @@ class FilterFragment : Fragment() {
                 val c = (1.0f - Math.abs(2.0f * lightness - 1.0f)) * newSaturation
                 val m = lightness - c / 2.0f
 
-                var rNew = (r - lightness) * c / saturation + lightness
-                var gNew = (g - lightness) * c / saturation + lightness
-                var bNew = (b - lightness) * c / saturation + lightness
+                var newRed = (r - lightness) * c / saturation + lightness
+                var newGreen = (g - lightness) * c / saturation + lightness
+                var newBlue = (b - lightness) * c / saturation + lightness
 
-                rNew = ((rNew + m) * 255).toInt().coerceIn(0, 255).toFloat()
-                gNew = ((gNew + m) * 255).toInt().coerceIn(0, 255).toFloat()
-                bNew = ((bNew + m) * 255).toInt().coerceIn(0, 255).toFloat()
+                newRed = ((newRed + m) * 255).toInt().coerceIn(0, 255).toFloat()
+                newGreen = ((newGreen + m) * 255).toInt().coerceIn(0, 255).toFloat()
+                newBlue = ((newBlue + m) * 255).toInt().coerceIn(0, 255).toFloat()
 
-                val newPixel = Color.argb(alpha, rNew.toInt(), gNew.toInt(), bNew.toInt())
+                val newPixel = Color.argb(alpha, newRed.toInt(), newGreen.toInt(), newBlue.toInt())
                 saturatedBitmap.setPixel(x, y, newPixel)
             }
         }
@@ -219,9 +230,19 @@ class FilterFragment : Fragment() {
                 var green = Color.green(pixel) + 40
                 var blue = Color.blue(pixel) + 40
 
-                red = if (red > 255) 255 else red
-                green = if (green > 255) 255 else green
-                blue = if (blue > 255) 255 else blue
+                red =
+                    if (red > 255)
+                        255
+                    else
+                        red
+                green =
+                    if (green > 255)
+                        255
+                    else green
+                blue =
+                    if (blue > 255)
+                        255
+                    else blue
 
                 val newPixel = Color.rgb(red, green, blue)
 
@@ -295,6 +316,36 @@ class FilterFragment : Fragment() {
         return sepiaBitmap
     }
 
+    private fun contrast(bitmap: Bitmap, coeff: Float): Bitmap {
+        val width = bitmap.width
+        val height = bitmap.height
+
+        val contrastedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+
+        val contrast = (coeff - 1) * 2
+
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                val pixel = bitmap.getPixel(x, y)
+
+                val red = Color.red(pixel)
+                val green = Color.green(pixel)
+                val blue = Color.blue(pixel)
+
+                val alpha = Color.alpha(pixel)
+
+                val newRed = ((red / 255.0 - 0.5) * contrast + 0.5).coerceIn(0.0, 1.0) * 255.0
+                val newGreen = ((green / 255.0 - 0.5) * contrast + 0.5).coerceIn(0.0, 1.0) * 255.0
+                val newBlue = ((blue / 255.0 - 0.5) * contrast + 0.5).coerceIn(0.0, 1.0) * 255.0
+
+                val newPixel = Color.argb(alpha, newRed.toInt(), newGreen.toInt(), newBlue.toInt())
+                contrastedBitmap.setPixel(x, y, newPixel)
+            }
+        }
+
+        return contrastedBitmap
+    }
+
     private fun mosaicFilter(bitmap: Bitmap, blockSize: Int): Bitmap {
         val width = bitmap.width
         val height = bitmap.height
@@ -338,6 +389,7 @@ class FilterFragment : Fragment() {
             val red = (redSum / pixelCount).toInt()
             val green = (greenSum / pixelCount).toInt()
             val blue = (blueSum / pixelCount).toInt()
+
             val averageColor = Color.rgb(red, green, blue)
 
             for (x in startX until (startX + blockSize).coerceAtMost(width)) {

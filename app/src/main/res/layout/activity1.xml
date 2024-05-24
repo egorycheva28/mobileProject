@@ -46,7 +46,6 @@
         android:id="@+id/retouchCanvasContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:elevation="1dp"
         app:layout_constraintBottom_toTopOf="@id/framelayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

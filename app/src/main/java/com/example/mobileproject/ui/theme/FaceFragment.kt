@@ -24,7 +24,7 @@ import java.io.OutputStream
 
 class FaceFragment : Fragment() {
     private var nBitmap: Bitmap? = null
-    private var nBitmapBefore: Bitmap? = null
+    private var nBitmapBefore1: Bitmap? = null
     private var faces: List<Rect>? = null
 
     val cascadePath = "haarcascade_frontalface_alt2.xml"
@@ -36,7 +36,7 @@ class FaceFragment : Fragment() {
         arguments?.let {
             nBitmap = it.getParcelable("imageBitmap")
         }
-        nBitmapBefore = nBitmap
+        nBitmapBefore1 = nBitmap
     }
 
     override fun onCreateView(
@@ -99,7 +99,7 @@ class FaceFragment : Fragment() {
         val buttonMosaic: ImageButton = view.findViewById(R.id.face_mosaic_button)
         buttonMosaic.setOnClickListener {
             nBitmap?.let { bitmap ->
-                val mosaicBitmap = faceMosaic(bitmap, faces, 10)
+                val mosaicBitmap = faceMosaic(bitmap, faces, 7)
                 (activity as? Activity1)?.let {
                     it.imageView.setImageBitmap(mosaicBitmap)
                     it.nBitmap = mosaicBitmap
@@ -118,23 +118,13 @@ class FaceFragment : Fragment() {
                     .show()
             }
         }
-        val buttonSaturation: ImageButton = view.findViewById(R.id.face_saturation_button)
-        buttonSaturation.setOnClickListener {
-            nBitmap?.let { bitmap ->
-                val saturationBitmap = faceSaturation(bitmap, faces, 1.5f)
-                (activity as? Activity1)?.let {
-                    it.imageView.setImageBitmap(saturationBitmap)
-                    it.nBitmap = saturationBitmap
-                } ?: Toast.makeText(activity, "No image to use filter on", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        }
+
         val buttonCancelFace: ImageButton = view.findViewById(R.id.cancel_face_button)
         buttonCancelFace.setOnClickListener {
             nBitmap?.let { bitmap ->
                 (activity as? Activity1)?.let {
-                    it.imageView.setImageBitmap(nBitmapBefore)
-                    it.nBitmap = nBitmapBefore
+                    it.imageView.setImageBitmap(nBitmapBefore1)
+                    it.nBitmap = nBitmapBefore1
                 } ?: Toast.makeText(activity, "No image to use filter on", Toast.LENGTH_SHORT)
                     .show()
             }
@@ -181,61 +171,6 @@ class FaceFragment : Fragment() {
         return input
     }
 
-    private fun faceSaturation(input: Bitmap, faces: List<Rect>?, saturationFactor: Float): Bitmap {
-        val result = input.copy(input.config, true)
-
-        if (faces != null) {
-            for (face in faces) {
-                for (y in face.y until face.y + face.height) {
-                    for (x in face.x until face.x + face.width) {
-                        val pixel = input.getPixel(x, y)
-                        val alpha = Color.alpha(pixel)
-
-                        val red = Color.red(pixel)
-                        val green = Color.green(pixel)
-                        val blue = Color.blue(pixel)
-
-                        val r = red / 255.0f
-                        val g = green / 255.0f
-                        val b = blue / 255.0f
-
-                        val max = maxOf(r, g, b)
-                        val min = minOf(r, g, b)
-                        val delta = max - min
-
-                        val lightness = (max + min) / 2.0f
-                        val saturation = if (max == min) {
-                            0.0f
-                        } else {
-                            if (lightness > 0.5f) delta / (2.0f - max - min)
-                            else delta / (max + min)
-                        }
-
-                        var newSaturation = saturation * saturationFactor
-                        newSaturation = newSaturation.coerceIn(0.0f, 1.0f)
-
-                        val c = (1.0f - Math.abs(2.0f * lightness - 1.0f)) * newSaturation
-                        val m = lightness - c / 2.0f
-
-                        var rNew = (r - lightness) * c / saturation + lightness
-                        var gNew = (g - lightness) * c / saturation + lightness
-                        var bNew = (b - lightness) * c / saturation + lightness
-
-                        rNew = ((rNew + m) * 255).toInt().coerceIn(0, 255).toFloat()
-                        gNew = ((gNew + m) * 255).toInt().coerceIn(0, 255).toFloat()
-                        bNew = ((bNew + m) * 255).toInt().coerceIn(0, 255).toFloat()
-
-                        val newPixel = Color.argb(alpha, rNew.toInt(), gNew.toInt(), bNew.toInt())
-                        result.setPixel(x, y, newPixel)
-
-                    }
-                }
-            }
-        }
-
-        return result
-    }
-
     private fun faceBrightness(input: Bitmap, faces: List<Rect>?): Bitmap {
         val result = input.copy(input.config, true)
 
@@ -249,9 +184,19 @@ class FaceFragment : Fragment() {
                         var green = Color.green(pixel) + 40
                         var blue = Color.blue(pixel) + 40
 
-                        red = if (red > 255) 255 else red
-                        green = if (green > 255) 255 else green
-                        blue = if (blue > 255) 255 else blue
+                        red =
+                            if (red > 255)
+                                255
+                            else
+                                red
+                        green =
+                            if (green > 255)
+                                255
+                            else green
+                        blue =
+                            if (blue > 255)
+                                255
+                            else blue
 
                         val newPixel = Color.rgb(red, green, blue)
 
@@ -345,7 +290,6 @@ class FaceFragment : Fragment() {
 
             for (x in startX until (startX + blockSize).coerceAtMost(face.x + face.width)) {
                 for (y in startY until (startY + blockSize).coerceAtMost(face.y + face.height)) {
-                    // Ensure we're still within the bounds of the face
                     if (x < face.x + face.width && x < width && y < face.y + face.height && y < height) {
                         mosaicBitmap.setPixel(x, y, averageColor)
                     }

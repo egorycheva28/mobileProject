@@ -214,6 +214,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Environment
 import android.util.Log
+import org.opencv.android.OpenCVLoader
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
@@ -229,6 +230,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         //enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+        if (!OpenCVLoader.initDebug())
+            Log.e("OpenCV", "Unable to load OpenCV!");
+        else
+            Log.d("OpenCV", "OpenCV loaded Successfully!");
+
         permissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions())
             { permissions ->

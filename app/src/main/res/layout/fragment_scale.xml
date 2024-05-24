@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context=".RotateFragment">
+    tools:context=".ScaleFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -21,25 +21,25 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <SeekBar
-            android:id="@+id/seekBar"
+            android:id="@+id/seekBarScale"
             android:layout_width="292dp"
             android:layout_height="74dp"
-            android:max="360"
-            android:progress="0"
+            android:max="300"
+            android:progress="100"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textView2"
+            app:layout_constraintEnd_toStartOf="@+id/scaleText"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.345" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/scaleText"
             android:layout_width="56dp"
             android:layout_height="24dp"
-            android:textColor="@color/d9d9d9"
             android:fontFamily="@font/montserrat_extralight"
             android:text="0"
+            android:textColor="@color/d9d9d9"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.952"
