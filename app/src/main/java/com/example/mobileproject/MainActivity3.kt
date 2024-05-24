@@ -20,7 +20,7 @@ import androidx.fragment.app.Fragment
 import java.io.IOException
 
 class MainActivity3 : AppCompatActivity(),
-    FirstFragment.OnSeekBarChangeListener1, MaskingFragment.OnSeekBarChangeListener1 {
+    FirstFragment.OnSeekBarChangeListener1, MaskingFragment.OnSeekBarChangeListener1, ScalingFragment.OnSeekBarChangeListener1 {
     private lateinit var framelayout: FrameLayout;
 
     private var imageBitmap1: Bitmap? = null
@@ -104,9 +104,9 @@ class MainActivity3 : AppCompatActivity(),
         }
         val buttonCrop = findViewById(R.id.crop_button) as ImageButton
         buttonCrop.setOnClickListener {
-            //val thirdFragment=ThirdFragment()
-            //setNewFragment(thirdFragment);
-            imageView.setImageBitmap(gaussFilter(imageBitmap1!!,3))
+            val scalingFragment=ScalingFragment()//для масштабирования
+            setNewFragment(scalingFragment);//для масштабирования
+            //imageView.setImageBitmap(gaussFilter(imageBitmap1!!,3))
         }
         //framelayout=findViewById(R.id.framelayout);
 
@@ -130,6 +130,10 @@ class MainActivity3 : AppCompatActivity(),
     override fun onSeekBarValueChange2(progress1: Int, progress2: Int, progress3: Int) {
         imageBitmap1 =
             Masking(imageBitmap1, progress1.toDouble() / 10.0, progress2, progress3.toDouble())
+    }
+    override fun onSeekBarValueChange3(value: Int) {//для масштабирования
+        imageBitmap1 =
+            Scaling(imageBitmap1, value)
     }
 
     /*override fun onSeekBarValueChange1(value1: Double,value2:Double,value3:Double) {
