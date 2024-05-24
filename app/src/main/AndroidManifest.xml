@@ -25,6 +25,7 @@
             android:name=".Cavas"
             android:exported="false"
             android:label="@string/title_activity_cavas"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.MobileProject" />
 
         <activity
