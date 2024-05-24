@@ -1018,8 +1018,7 @@ class Activity1 : AppCompatActivity() {
         //считаем коэффицент, чтобы был чуть больше исходного
         val scaleFactor2 = (0.5 + scaleFactor / 2).toFloat()
 
-        val changeInput = bilinearInterpolation(input, scaleFactor2)
-        val secondResult = bilinearInterpolation(changeInput, scaleFactor / scaleFactor2)
+        val secondResult = bilinearInterpolation(bilinearInterpolation(input, scaleFactor2), scaleFactor / scaleFactor2)
         val firstResult = bilinearInterpolation(input, scaleFactor)
 
         //усредненее цвета из двух утоговых изображений
