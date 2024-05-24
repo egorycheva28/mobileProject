@@ -20,13 +20,9 @@ import androidx.fragment.app.Fragment
 import java.io.IOException
 
 class MainActivity3 : AppCompatActivity(),
-    FirstFragment.OnSeekBarChangeListener1/*, MaskingFragment.OnSeekBarChangeListener2*/ {
-    //private lateinit var recyclerView: RecyclerView
-    //private lateinit var buttons: ArrayList<Filters>
-    //private lateinit var adapter: Adapter
+    FirstFragment.OnSeekBarChangeListener1, MaskingFragment.OnSeekBarChangeListener1 {
     private lateinit var framelayout: FrameLayout;
 
-    //private lateinit var imageView: ImageView
     private var imageBitmap1: Bitmap? = null
     private var imageBitmap2: Bitmap? = null
     private lateinit var imageView: ImageView
@@ -53,13 +49,13 @@ class MainActivity3 : AppCompatActivity(),
 
         val buttonMasking = findViewById(R.id.unsharp_button1) as ImageButton
         buttonMasking.setOnClickListener {
-            val maskingFragment=MaskingFragment()
-            setNewFragment(maskingFragment);
+            //val maskingFragment=MaskingFragment()
+            //setNewFragment(maskingFragment);
             //var result=Bitmap.createBitmap(imageBitmap1!!.width, imageBitmap1!!.height, Bitmap.Config.ARGB_8888);
-            /*imageBitmap1 = Masking(
-                imageBitmap1, 0.8, 6, 0.4
+            imageBitmap1 = Masking(
+                imageBitmap1, 0.25, 3, 100.0
             )
-            imageView.setImageBitmap(imageBitmap1)*/
+            imageView.setImageBitmap(imageBitmap1)
             //imageBitmap1= maska(imageBitmap1)
             //imageView.setImageBitmap(imageBitmap1)
         }
@@ -71,7 +67,7 @@ class MainActivity3 : AppCompatActivity(),
 
         val buttonRotate = findViewById(R.id.rotate_button) as ImageButton
         buttonRotate.setOnClickListener {
-            val firstFragment=FirstFragment()
+            val firstFragment = FirstFragment()
             setNewFragment(firstFragment);
             //val matrix= bitmapToMatrix(imageBitmap1!!);
             //var newBitmap=Bitmap.createBitmap(imageBitmap1!!.height, imageBitmap1!!.width, Bitmap.Config.ARGB_8888);
@@ -110,7 +106,7 @@ class MainActivity3 : AppCompatActivity(),
         buttonCrop.setOnClickListener {
             //val thirdFragment=ThirdFragment()
             //setNewFragment(thirdFragment);
-            imageView.setImageBitmap(gaussFilter(imageBitmap1!!))
+            imageView.setImageBitmap(gaussFilter(imageBitmap1!!,3))
         }
         //framelayout=findViewById(R.id.framelayout);
 
@@ -121,9 +117,19 @@ class MainActivity3 : AppCompatActivity(),
         }
     }
 
-    override fun onSeekBarValueChange(value: Int) {
-        imageBitmap1=rotateImage(imageBitmap2!!,value,imageBitmap2!!.width.toDouble(),imageBitmap2!!.height.toDouble());
+    override fun onSeekBarValueChange1(value: Int) {
+        imageBitmap1 = rotateImage(
+            imageBitmap2!!,
+            value,
+            imageBitmap2!!.width.toDouble(),
+            imageBitmap2!!.height.toDouble()
+        );
         imageView.setImageBitmap(imageBitmap1)
+    }
+
+    override fun onSeekBarValueChange2(progress1: Int, progress2: Int, progress3: Int) {
+        imageBitmap1 =
+            Masking(imageBitmap1, progress1.toDouble() / 10.0, progress2, progress3.toDouble())
     }
 
     /*override fun onSeekBarValueChange1(value1: Double,value2:Double,value3:Double) {
