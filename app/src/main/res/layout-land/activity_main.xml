@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/welcome_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginHorizontal="50sp"
+        android:layout_marginTop="41dp"
+        android:src="@drawable/bg_welcome" />
+
+    <ImageButton
+        android:id="@+id/camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="78dp"
+        android:layout_marginBottom="100dp"
+        android:background="@null"
+        android:src="@drawable/cam" />
+
+    <TextView
+        android:id="@+id/open_camera_text"
+        android:layout_width="281dp"
+        android:layout_height="54dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="28dp"
+        android:fontFamily="@font/montserrat_extralight"
+        android:text="@string/camera_text"
+        android:textAlignment="center"
+        android:textColor="@color/white" />
+
+    <ImageButton
+        android:id="@+id/gallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/open_camera_text"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="304dp"
+        android:layout_marginTop="-226dp"
+        android:layout_marginEnd="302dp"
+        android:background="@null"
+        android:src="@drawable/gal" />
+
+    <TextView
+        android:id="@+id/import_gallery_text"
+        android:layout_width="236dp"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="259dp"
+        android:layout_marginEnd="236dp"
+        android:layout_marginBottom="44dp"
+        android:fontFamily="@font/montserrat_extralight"
+        android:text="@string/gallery_text"
+        android:textAlignment="center"
+        android:textColor="@color/white" />
+
+    <ImageButton
+        android:id="@+id/spline"
+        android:layout_width="140dp"
+        android:layout_height="123dp"
+        android:layout_below="@+id/import_gallery_text"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="-226dp"
+        android:layout_marginEnd="53dp"
+        android:background="@null"
+        android:src="@drawable/spline" />
+
+    <TextView
+        android:id="@+id/spline_text"
+        android:layout_width="228dp"
+        android:layout_height="38dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="44dp"
+        android:fontFamily="@font/montserrat_extralight"
+        android:text="@string/spline_text"
+        android:textAlignment="center"
+        android:textColor="@color/white" />
+
+
+</RelativeLayout>
