@@ -129,7 +129,7 @@ class MainActivity3 : AppCompatActivity(),
 
     override fun onSeekBarValueChange2(progress1: Int, progress2: Int, progress3: Int) {
         imageBitmap1 =
-            Masking(imageBitmap2, progress1.toDouble() / 10.0, progress2, progress3.toDouble())
+            Masking(imageBitmap2, progress1.toDouble() / 100.0, progress2, progress3.toDouble())
         imageView.setImageBitmap(imageBitmap1)
     }
     override fun onSeekBarValueChange3(value: Int) {//для масштабирования

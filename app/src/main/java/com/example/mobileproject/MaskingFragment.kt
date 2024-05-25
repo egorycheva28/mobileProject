@@ -41,12 +41,10 @@ class MaskingFragment : Fragment() {
         val seekBar2 = view.findViewById<SeekBar>(R.id.seekBar4)
         val seekBar3 = view.findViewById<SeekBar>(R.id.seekBar5)
 
-
         seekBar1.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar1: SeekBar, progress: Int, fromUser: Boolean) {
                 progress1 = progress
                 listener?.onSeekBarValueChange2(progress1, progress2, progress3)
-
             }
 
             override fun onStartTrackingTouch(seekBar1: SeekBar) {}
@@ -58,7 +56,6 @@ class MaskingFragment : Fragment() {
             override fun onProgressChanged(seekBar2: SeekBar, progress: Int, fromUser: Boolean) {
                 progress2 = progress
                 listener?.onSeekBarValueChange2(progress1, progress2, progress3)
-
             }
 
             override fun onStartTrackingTouch(seekBar2: SeekBar) {}
@@ -70,7 +67,6 @@ class MaskingFragment : Fragment() {
             override fun onProgressChanged(seekBar3: SeekBar, progress: Int, fromUser: Boolean) {
                 progress3 = progress
                 listener?.onSeekBarValueChange2(progress1, progress2, progress3)
-
             }
 
             override fun onStartTrackingTouch(seekBar3: SeekBar) {}
