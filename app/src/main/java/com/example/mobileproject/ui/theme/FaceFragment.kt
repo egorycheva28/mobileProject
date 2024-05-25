@@ -1,5 +1,5 @@
 package com.example.mobileproject
-
+// https://www.youtube.com/watch?v=Tu1808Mum8Q&t=199s
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
