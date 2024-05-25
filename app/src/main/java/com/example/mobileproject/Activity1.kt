@@ -24,7 +24,8 @@ import androidx.fragment.app.FragmentTransaction
 import java.io.IOException
 
 class Activity1 : AppCompatActivity(),
-    RotateFragment.OnSeekBarChangeListener1, ScaleFragment.OnSeekBarChangeListener2 {
+    RotateFragment.OnSeekBarChangeListener1, MaskingFragment.OnSeekBarChangeListener3,
+    ScaleFragment.OnSeekBarChangeListener2 {
     lateinit var imageView: ImageView
     var nBitmap: Bitmap? = null
     private var imageBitmap2: Bitmap? = null
@@ -105,6 +106,7 @@ class Activity1 : AppCompatActivity(),
                 invalidate()
                 return true
             }
+
             private fun applyMosaic(x: Int, y: Int) {
                 val width = touchBitmap!!.width
                 val height = touchBitmap!!.height
@@ -244,13 +246,10 @@ class Activity1 : AppCompatActivity(),
             } ?: Toast.makeText(this, "No image to scale", Toast.LENGTH_SHORT).show()
         }*/
 
-        val buttonMaska: ImageButton = findViewById(R.id.unsharp_button)
-        buttonMaska.setOnClickListener {
-            nBitmap?.let { bitmap ->
-                val result = maska(bitmap);
-                imageView.setImageBitmap(result)
-                nBitmap = result
-            } ?: Toast.makeText(this, "No image to mask", Toast.LENGTH_SHORT).show()
+        val buttonMasking = findViewById(R.id.unsharp_button) as ImageButton
+        buttonMasking.setOnClickListener {
+            val maskingFragment = MaskingFragment()
+            setNewFragment(maskingFragment);
         }
     }
 
@@ -266,6 +265,12 @@ class Activity1 : AppCompatActivity(),
 
     override fun onSeekBarValueChangeScale(value: Float) {
         nBitmap = trilinearInterpolation(imageBitmap4!!, value)
+        imageView.setImageBitmap(nBitmap)
+    }
+
+    override fun onSeekBarValueChange2(progress1: Int, progress2: Int, progress3: Int) {
+        nBitmap =
+            Masking(imageBitmap2, progress1.toDouble() / 100.0, progress2, progress3)
         imageView.setImageBitmap(nBitmap)
     }
 
@@ -405,7 +410,10 @@ class Activity1 : AppCompatActivity(),
         //считаем коэффицент, чтобы был чуть больше исходного
         val scaleFactor2 = (0.5 + scaleFactor / 2).toFloat()
 
-        val secondResult = bilinearInterpolation(bilinearInterpolation(input, scaleFactor2), scaleFactor / scaleFactor2)
+        val secondResult = bilinearInterpolation(
+            bilinearInterpolation(input, scaleFactor2),
+            scaleFactor / scaleFactor2
+        )
         val firstResult = bilinearInterpolation(input, scaleFactor)
 
         //усредненее цвета из двух утоговых изображений
