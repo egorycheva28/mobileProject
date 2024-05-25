@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
+import java.lang.Integer.compare
+import java.util.Objects.compare
 import kotlin.math.exp
 import kotlin.math.pow
 
@@ -110,7 +112,6 @@ class FilterFragment : Fragment() {
                     it.nBitmap = result
                 } ?: Toast.makeText(activity, "@strings/no_image", Toast.LENGTH_SHORT).show()
             }
-
         }
 
         val buttonRed: ImageButton = view.findViewById(R.id.red_button)
@@ -400,56 +401,6 @@ class FilterFragment : Fragment() {
         }
     }
 
-    /*private fun gaussFilter(bitmap: Bitmap): Bitmap {
-        val width = bitmap.width
-        val height = bitmap.height
-        val blurredBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-
-        val gaussianKernel = arrayOf(
-            arrayOf(1, 2, 1),
-            arrayOf(2, 4, 2),
-            arrayOf(1, 2, 1)
-        )
-        val kernelSum = 16
-
-        for (x in 1 until width - 1) {
-            for (y in 1 until height - 1) {
-                var redSum = 0
-                var greenSum = 0
-                var blueSum = 0
-
-                for (kernelX in -1..1) {
-                    for (kernelY in -1..1) {
-                        val pixel = bitmap.getPixel(x + kernelX, y + kernelY)
-                        val weight = gaussianKernel[kernelX + 1][kernelY + 1]
-
-                        redSum += Color.red(pixel) * weight
-                        greenSum += Color.green(pixel) * weight
-                        blueSum += Color.blue(pixel) * weight
-                    }
-                }
-
-                val red = (redSum / kernelSum).toInt()
-                val green = (greenSum / kernelSum).toInt()
-                val blue = (blueSum / kernelSum).toInt()
-                val newPixel = Color.rgb(red, green, blue)
-
-                blurredBitmap.setPixel(x, y, newPixel)
-            }
-        }
-
-        for (i in 0 until width) {
-            blurredBitmap.setPixel(i, 0, bitmap.getPixel(i, 0))
-            blurredBitmap.setPixel(i, height - 1, bitmap.getPixel(i, height - 1))
-        }
-        for (i in 0 until height) {
-            blurredBitmap.setPixel(0, i, bitmap.getPixel(0, i))
-            blurredBitmap.setPixel(width - 1, i, bitmap.getPixel(width - 1, i))
-        }
-
-        return blurredBitmap
-    }*/
-
     private fun red(bitmap: Bitmap): Bitmap {
         val width = bitmap.width
         val height = bitmap.height
@@ -470,77 +421,51 @@ class FilterFragment : Fragment() {
         return redBitmap
     }
 
-    private fun clamp(value: Int, min: Int = 0, max: Int = 255): Int {
-        return Math.min(max, Math.max(min, value))
+    private fun compare(value: Int, min: Int = 0, max: Int = 255): Int {
+        return max.coerceAtMost(min.coerceAtLeast(value))
     }
 
     fun gaussFilter(bitmap: Bitmap, radius: Int): Bitmap {
         val width = bitmap.width
         val height = bitmap.height
         val blurredBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        //val pixels = IntArray(bitmap.width * bitmap.height)
-        //bitmap.getPixels(pixels, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
 
-        //val newPixels = IntArray(pixels.size)
-        /*val gaussianKernel = arrayOf(
-            arrayOf(2, 2, 2),
-            arrayOf(2, 4, 2),
-            arrayOf(2, 2, 2)
-        )
-        val kernelSum = 20*/
-
-        //val kernel = createGaussianKernel(radius)
         for (x in 0 until width) {
             for (y in 0 until height) {
-                var redSum = 0
-                var greenSum = 0
-                var blueSum = 0
+                var redSum = 0.0
+                var greenSum = 0.0
+                var blueSum = 0.0
                 var kernelSum = 0.0
 
                 for (kernelX in -radius..radius) {
                     for (kernelY in -radius..radius) {
-                        //val weight = kernel[kernelX + radius][kernelY + radius]
                         val weight = gaussianKernel(kernelX, kernelY, radius / 3.0)
                         kernelSum += weight
                         if ((x + kernelX) in 0 until width && (y + kernelY) in 0 until height) {
                             val pixel = bitmap.getPixel(x + kernelX, y + kernelY)
 
-                            //val pixel = pixels[(y + kernelY) * bitmap.width + (x + kernelX)]
-                            redSum += Color.red(pixel) * weight.toInt()
-                            greenSum += Color.green(pixel) * weight.toInt()
-                            blueSum += Color.blue(pixel) * weight.toInt()
-
+                            redSum += Color.red(pixel) * weight
+                            greenSum += Color.green(pixel) * weight
+                            blueSum += Color.blue(pixel) * weight
                         }
                     }
                 }
 
-                //val red = (redSum / kernelSum).toInt()
-                //val green = (greenSum / kernelSum).toInt()
-                //val blue = (blueSum / kernelSum).toInt()
-                //newPixels[y * bitmap.width + x] = Color.rgb(redSum, greenSum, blueSum)
-                val newPixel = Color.rgb(clamp(redSum), clamp(greenSum), clamp(blueSum))
+                val red = (redSum / kernelSum).toInt()
+                val green = (greenSum / kernelSum).toInt()
+                val blue = (blueSum / kernelSum).toInt()
+                val newPixel = Color.rgb(compare(red), compare(green), compare(blue))
 
                 blurredBitmap.setPixel(x, y, newPixel)
             }
         }
-        //val resultBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
-        //resultBitmap.setPixels(newPixels, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
-
-        /*for (i in 0 until width) {
-            blurredBitmap.setPixel(i, 0, bitmap.getPixel(i, 0))
-            blurredBitmap.setPixel(i, height - 1, bitmap.getPixel(i, height - 1))
-        }
-        for (i in 0 until height) {
-            blurredBitmap.setPixel(0, i, bitmap.getPixel(0, i))
-            blurredBitmap.setPixel(width - 1, i, bitmap.getPixel(width - 1, i))
-        }*/
-        //return resultBitmap
 
         return blurredBitmap
     }
 
     private fun gaussianKernel(x: Int, y: Int, sigma: Double): Double {
-        val exp1 = -(x.toDouble().pow(2) + y.toDouble().pow(2)) / (2 * sigma.pow(2));
-        return exp(exp1) / (2 * Math.PI * sigma.pow(2));
+        val exp1 = -(x.toDouble().pow(2) + y.toDouble().pow(2)) / (2 * sigma.pow(2))
+        return exp(exp1) / (2 * Math.PI * sigma.pow(2))
     }
+
 }
