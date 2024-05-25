@@ -7,7 +7,7 @@ import kotlin.math.exp
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-fun Masking(bitmap: Bitmap?, coefficient: Double, radius: Int, porog: Double): Bitmap {
+fun Masking(bitmap: Bitmap?, coefficient: Double, radius: Int, porog: Int): Bitmap {
     val width = bitmap!!.width
     val height = bitmap.height
 
