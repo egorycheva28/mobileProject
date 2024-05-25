@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FilterFragment">
+    tools:context=".FaceFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -25,15 +25,15 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:id="@+id/bw_button"
+                    android:id="@+id/face_rectangle_button"
                     android:layout_width="100dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"
                     android:background="@null"
-                    android:src="@drawable/black_white" />
+                    android:src="@drawable/face_rectangle" />
 
                 <ImageButton
-                    android:id="@+id/brightness_button"
+                    android:id="@+id/face_brightness_button"
                     android:layout_width="100dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"
@@ -41,7 +41,7 @@
                     android:src="@drawable/brightness" />
 
                 <ImageButton
-                    android:id="@+id/inversion_button"
+                    android:id="@+id/face_inversion_button"
                     android:layout_width="100dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"
@@ -49,23 +49,7 @@
                     android:src="@drawable/inversion" />
 
                 <ImageButton
-                    android:id="@+id/sepia_button"
-                    android:layout_width="100dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:src="@drawable/sepia" />
-
-                <ImageButton
-                    android:id="@+id/contrast_button"
-                    android:layout_width="100dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:src="@drawable/contr" />
-
-                <ImageButton
-                    android:id="@+id/mosaic_button"
+                    android:id="@+id/face_mosaic_button"
                     android:layout_width="100dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"
@@ -73,15 +57,7 @@
                     android:src="@drawable/mosaic" />
 
                 <ImageButton
-                    android:id="@+id/blur_button"
-                    android:layout_width="100dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:src="@drawable/blur" />
-
-                <ImageButton
-                    android:id="@+id/red_button"
+                    android:id="@+id/face_red_button"
                     android:layout_width="100dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"
@@ -89,12 +65,12 @@
                     android:src="@drawable/red_filter" />
 
                 <ImageButton
-                    android:id="@+id/saturation_button"
+                    android:id="@+id/cancel_face_button"
                     android:layout_width="100dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"
                     android:background="@null"
-                    android:src="@drawable/saturation" />
+                    android:src="@drawable/x" />
 
             </LinearLayout>
         </HorizontalScrollView>

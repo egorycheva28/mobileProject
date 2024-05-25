@@ -5,7 +5,11 @@
     <string name="input_name">Your name</string>
     <string name="camera_text">open camera</string>
     <string name="gallery_text">import from gallery</string>
+    <string name="spline_text">try splines</string>
     <string name="title_activity_main3">MainActivity3</string>
+    <string name="draw_splines">Draw splines</string>
+    <string name="no_image">No image to use filter on</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_cavas">Cavas</string>
 </resources>
